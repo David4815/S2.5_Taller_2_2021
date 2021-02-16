@@ -10,32 +10,69 @@
 <body>
  
 
-  <ons-navigator swipeable id="myNavigator" page="login.html"></ons-navigator>
+  <!-- Para navegar entre paginas cuando no esta el menu, con el menu usamos fn.load(page) -->
+  <!-- <ons-navigator swipeable id="myNavigator" page="login.html"></ons-navigator> -->
 
-<!-- LOGIN------------------------------------------------ -->
 
-<template id="login.html">
-  <ons-page id="login"> 
-    <div style="text-align: center; margin-top: 30px;">
-      <p>
-        <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
-      </p>
-      <p>
-        <ons-input id="password" modifier="underbar" type="password" placeholder="Password" value="12345678" float></ons-input>
-      </p>
-      <p style="margin-top: 30px;">
-        <ons-button onclick="login()">Sign in</ons-button>
-      </p>
-      <!-- <ons-button modifier='quiet' onclick="irARegistro()">No tienes usuario? Registrate!</ons-button> -->
-      <ons-button modifier='quiet' onclick="navegar('registro')">No tienes usuario? Registrate!</ons-button>
-    </div>
+
+
+<!-- MENU DESPLAGABLE------------------------ -->
+<ons-splitter >
+  <ons-splitter-side id="menu" side="left"  width="220px" collapse swipeable>
+    <ons-page>
+      <ons-list>
+        <ons-list-item onclick="fn.load('home.html')" tappable>
+          Home
+        </ons-list-item>
+        <ons-list-item onclick="fn.load('settings.html')" tappable>
+          Settings
+        </ons-list-item>
+        <ons-list-item onclick="fn.load('about.html')" tappable>
+          About
+        </ons-list-item>
+      </ons-list>
+    </ons-page>
+  </ons-splitter-side>
+  <ons-splitter-content id="content" page="login.html"></ons-splitter-content>
+</ons-splitter>
+
+
+<!-- PAGINA DE INICIO------------------------------------------------------------------------------------------------------- -->
+
+
+<template id="home.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Main
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
   </ons-page>
 </template>
 
 <!-- REGISTRO------------------------------------------------------------ -->
 
 <template id="registro.html">
-  <ons-page id="registro"> 
+  <ons-page id="registro">
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Settings
+      </div>
+    </ons-toolbar>
+
     <div style="text-align: center; margin-top: 30px;">
       <p>
         <ons-input id="nombre" modifier="underbar" placeholder="nombre" float></ons-input>
@@ -56,35 +93,17 @@
         <ons-button onclick="registrar()">Registrarse</ons-button>
       </p>
       <!-- <ons-button modifier='quiet' onclick="irLogin()">Ya tienes usuario? Logueate!</ons-button> -->
-      <ons-button modifier='quiet' onclick="navegar('login')">Ya tienes usuario? Logueate!</ons-button>
+      <ons-button modifier='quiet' onclick="fn.load('login.html')">Ya tienes usuario? Logueate!</ons-button>
     </div>
+
+
   </ons-page>
 </template>
 
-<!-- INICIO------------------------------------------------------------------------------------------------------- -->
+<!-- LOGIN------------------------------------------------ -->
 
-
-<!-- <ons-splitter>
-  <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
-    <ons-page>
-      <ons-list>
-        <ons-list-item onclick="fn.load('home.html')" tappable>
-          Home
-        </ons-list-item>
-        <ons-list-item onclick="fn.load('settings.html')" tappable>
-          Settings
-        </ons-list-item>
-        <ons-list-item onclick="fn.load('about.html')" tappable>
-          About
-        </ons-list-item>
-      </ons-list>
-    </ons-page>
-  </ons-splitter-side>
-  <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
-</ons-splitter>
-
-<template id="home.html">
-  <ons-page>
+<template id="login.html">
+  <ons-page id="login">
     <ons-toolbar>
       <div class="left">
         <ons-toolbar-button onclick="fn.open()">
@@ -92,14 +111,30 @@
         </ons-toolbar-button>
       </div>
       <div class="center">
-        Main
+        About
       </div>
     </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
+    
+      <div style="text-align: center; margin-top: 30px;">
+        <p>
+          <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
+        </p>
+        <p>
+          <ons-input id="password" modifier="underbar" type="password" placeholder="Password" value="12345678" float></ons-input>
+        </p>
+        <p style="margin-top: 30px;">
+          <ons-button onclick="login()">Sign in</ons-button>
+        </p>
+        <!-- <ons-button modifier='quiet' onclick="irARegistro()">No tienes usuario? Registrate!</ons-button> -->
+        <ons-button modifier='quiet' onclick="fn.load('registro.html')">No tienes usuario? Registrate!</ons-button>
+      </div>
+
   </ons-page>
 </template>
+
+
+<!-- SETTINGS -->
+<!-- SE PUEDE USAR COMO PLANTILLA PARA CREAR PAGINAS CON MENU -->
 
 <template id="settings.html">
   <ons-page>
@@ -116,72 +151,7 @@
   </ons-page>
 </template>
 
-<template id="about.html">
-  <ons-page>
-    <ons-toolbar>
-      <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
-          <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button>
-      </div>
-      <div class="center">
-        About
-      </div>
-    </ons-toolbar>
-  </ons-page>
-</template> -->
-
-<ons-splitter>
-  <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
-    <ons-page>
-      <ons-list>
-        <ons-list-item onclick="fn.load('home.html')" tappable>
-          Home
-        </ons-list-item>
-        <ons-list-item onclick="fn.load('settings.html')" tappable>
-          Settings
-        </ons-list-item>
-        <ons-list-item onclick="fn.load('about.html')" tappable>
-          About
-        </ons-list-item>
-      </ons-list>
-    </ons-page>
-  </ons-splitter-side>
-  <ons-splitter-content id="content" page="home.html"></ons-splitter-content>
-</ons-splitter>
-
-<template id="home.html">
-  <ons-page>
-    <ons-toolbar>
-      <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
-          <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button>
-      </div>
-      <div class="center">
-        Main
-      </div>
-    </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
-  </ons-page>
-</template>
-
-<template id="settings.html">
-  <ons-page>
-    <ons-toolbar>
-      <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
-          <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button>
-      </div>
-      <div class="center">
-        Settings
-      </div>
-    </ons-toolbar>
-  </ons-page>
-</template>
+<!-- ABOUT -->
 
 <template id="about.html">
   <ons-page>
@@ -192,11 +162,15 @@
         </ons-toolbar-button>
       </div>
       <div class="center">
-        About
+        about
       </div>
     </ons-toolbar>
   </ons-page>
 </template>
+
+
+
+
 <!-- FIN -->
   <!-- <template id="inicio.html">
     <ons-page id="inicio">

@@ -1,3 +1,5 @@
+// ons.boostrap();
+
 function btnClick(){
     ons.notification.alert('Hello World!');
 }
@@ -77,36 +79,24 @@ function registrar(){
   }
 
   // menu------
-//   window.fn = {};
+  window.fn = {};
 
-// window.fn.open = function() {
-//   var menu = document.getElementById('menu');
+window.fn.open = function() {
+  var menu = document.getElementById('menu');
   
-//   menu.open();
-// };
+  menu.open();
+};
 
-// window.fn.load = function(page) {
-//   var content = document.getElementById('content');
-//   var menu = document.getElementById('menu');
-//   content.load(page)
-//     .then(menu.close.bind(menu));
-// };
+window.fn.load = function(page) {
+  var content = document.getElementById('content');
+  var menu = document.getElementById('menu');
+  content.load(page)
+    .then(menu.close.bind(menu));
+};
 
 
 
-window.fn = {};
 
-  window.fn.open = function() {
-    var menu = document.getElementById('menu');
-    menu.open();
-  };
-  
-  window.fn.load = function(page) {
-    var content = document.getElementById('content');
-    var menu = document.getElementById('menu');
-    content.load(page)
-      .then(menu.close.bind(menu));
-  };
 
   // fin menu---
 
@@ -141,7 +131,7 @@ function login(){
       success: function (response) {
         console.log(response);     
       ons.notification.toast('Logueando...', {timeout: 1000});
-      document.querySelector('#myNavigator').pushPage('home.html');
+      fn.load('home.html')
       },
       error: function (e1, e2, e3) {
         console.log('Error...', e1, e2, e3);
