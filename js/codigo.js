@@ -1,13 +1,78 @@
 // ons.boostrap();
+function filtrarPoretiqueta(){
+  let textoBuscado = $("#txtBusqueda").val();
+  let token = localStorage.getItem('token')
 
+  $.ajax({
+    url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
+    type: 'GET',
+    headers: {
+      'x-auth': token,
+    },
+    dataType: 'json',
+    success: function (dataTraida) {
+      let listaCatalogo = $('#listaCatalogo')
+      
+
+      dataTraida.data.forEach((elem) => {
+        let esta = false;
+        // ACA NO ANDA------------------------------------------------------------
+          for(let i=0; i<listaCatalogo.length; i++){
+              if(listaCatalogo.nomb===elem.nombre){
+                esta=true;
+              }
+          }
+        if(elem.etiquetas.includes(textoBuscado && !esta)){
+          
+        listaCatalogo.append(` 
+          <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
+           
+          
+          
+          <div class="left">
+              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+            </div>
+
+            
+
+            <div class="center">
+            <span class="list-item__title">${elem._id}</span>
+              <span class="list-item__title">${elem.nombre}</span>
+              <span class="list-item__subtitle">${elem.precio}UYU</span>
+              <span class="list-item__subtitle">${elem.codigo}</span>
+              <span class="list-item__subtitle">${elem.etiquetas}</span>
+            </div>
+            <div class="right">
+              <span class="list-item__title">${elem.estado}</span>
+            </div>
+          </ons-list-item>`)
+        }
+      })
+      listaCatalogo.fadeIn()
+      // $('#btnVerMas').fadeIn()
+    
+    },
+
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+}
 
 document.addEventListener('init', function (event) {
   var page = event.target
 
   switch (page.id) {
     case `detalle`:
-      let id = page.data.id
-      detalle(id)
+      // let id = page.data.id
+      let id = "601bf7cf3b11a01a78163122"
+      // ons.notification.alert(id)
+
+      detalleProducto(id)
+
       break
   }
 
@@ -89,6 +154,15 @@ window.fn.load = function (page) {
   content.load(page).then(menu.close.bind(menu))
 }
 
+window.fn.load = function (page, idProducto) {
+  var content = document.getElementById('content')
+  var menu = document.getElementById('menu')
+  content.load(page).then(menu.close.bind(menu))
+  data: {
+    id: idProducto
+  }
+}
+
 // fin menu---
 
 // LOGIN---------------------------------------------------------------------------------------------------
@@ -153,40 +227,39 @@ function mostrarListado() {
     },
     dataType: 'json',
     success: function (dataTraida) {
-      let listaCatalogo = $("#listaCatalogo");
-      console.log('data traida', dataTraida.data[0]);
-      console.log('data traida', dataTraida.data[0].urlImagen);
-
+      let listaCatalogo = $('#listaCatalogo')
+      console.log('data traida', dataTraida.data[0])
+      console.log('data traida', dataTraida.data[0].urlImagen)
 
       dataTraida.data.forEach((elem) => {
-        listaCatalogo.append(` <ons-list-header>${elem.codigo}</ons-list-header>
-          <ons-list-item onClick="document.querySelector('#myNavigator').pushPage('detalle.html', {data: { id: '${elem.id}'}})">
+        
+        listaCatalogo.append(` 
+          <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
            
           
           
           <div class="left">
-              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos/${elem.urlImagen}">
+              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
             </div>
 
-
-            <div class="left">
-              <img class="list-item__thumbnail" src=${obtenerFoto(elem.urlImagen)}">
-            </div>
-
-
+            
 
             <div class="center">
-              <span class="list-item__title">${elem.nombre}</span><span class="list-item__subtitle">${elem.precio}</span>
+            <span class="list-item__title">${elem._id}</span>
+              <span class="list-item__title" id="nomb">${elem.nombre}</span>
+              <span class="list-item__subtitle">${elem.precio}UYU</span>
+              <span class="list-item__subtitle">${elem.codigo}</span>
+              <span class="list-item__subtitle">${elem.etiquetas}</span>
+            </div>
+            <div class="right">
+              <span class="list-item__title">${elem.estado}</span>
             </div>
           </ons-list-item>`)
       })
       listaCatalogo.fadeIn()
       // $('#btnVerMas').fadeIn()
     },
-      
 
-
-  
     error: function (e1, e2, e3) {
       console.log('Error...', e1, e2, e3)
     },
@@ -196,8 +269,63 @@ function mostrarListado() {
   })
 }
 
-// PRUEBA PARA OBTENER FOTO DE ARTICULO
+// DETALLE PRODUCTO
 
+function detalleProducto(id) {
+  $.ajax({
+    url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos/${id}`,
+    type: 'GET',
+    headers: {
+      'x-auth': localStorage.getItem("token"),
+    },
+    dataType: 'json',
+    // beforeSend: function () {
+    //   $(`#progresCargaDetalle`).show()
+    // },
+    success: function (response) {
+      // console.log('data', data)
+      // ons.notification.alert(response.data.nombre)
+      
+
+     
+      $('#contenedorDetalle').html(`
+      
+      <div>
+              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+      </div>    
+
+      <div>
+              <span class="list-item__title">${response.data.nombre}</span>
+              <span class="list-item__subtitle">${response.data.precio}UYU</span>
+              <span class="list-item__subtitle">${response.data.codigo}</span>
+              <span class="list-item__subtitle">${response.data.etiquetas}</span>
+              <span class="list-item__subtitle">${response.data.descripcion}</span>
+              <span class="list-item__subtitle">${response.data.puntaje}</span>
+       </div>
+          <div class="right">
+              <span class="list-item__title">${response.data.estado}</span>
+            </div>
+
+      
+      `)
+
+      // $(`#progresCargaDetalle`).hide()
+      $('#progressCargaDetalle').hide();
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+}
+
+/* <div class="left">
+              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos/${elem.urlImagen}">
+            </div> */
+
+// PRUEBA PARA OBTENER FOTO DE ARTICULO
 function obtenerFoto(urlFoto) {
   let token = localStorage.getItem('token')
   console.log(token)
@@ -209,14 +337,10 @@ function obtenerFoto(urlFoto) {
     },
     dataType: 'json',
     success: function (dataTraida) {
-     let url = dataTraida;
-     return url;
-     
+      let url = dataTraida
+      return url
     },
-      
 
-
-  
     error: function (e1, e2, e3) {
       console.log('Error...', e1, e2, e3)
     },
@@ -226,6 +350,67 @@ function obtenerFoto(urlFoto) {
   })
 }
 
+// FILTRAR-----------------------------------------------------
+function filtrar() {
+  let busqueda = $('#txtBusqueda').val()
+  $.ajax({
+    url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
+    type: 'GET',
+    data: {
+      nombre: busqueda
+    },
+    headers: {
+      'x-auth': localStorage.getItem("token"),
+    },
+    dataType: 'json',
+    success: function (response) {
+      let listado = $('#listaCatalogo')
+      console.log('data detalle', response)
+      response.data.forEach((elem) => {
+        listado.append(` 
+        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem.id}'}})">
+         
+        
+        
+        <div class="left">
+            <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+          </div>
+
+          
+
+          <div class="center">
+            <span class="list-item__title">${elem.nombre}</span>
+            <span class="list-item__subtitle">${elem.precio}UYU</span>
+            <span class="list-item__subtitle">${elem.codigo}</span>
+            <span class="list-item__subtitle">${elem.etiquetas}</span>
+          </div>
+          <div class="right">
+            <span class="list-item__title">${elem.estado}</span>
+          </div>
+        </ons-list-item>`)
+      })
+      listado.fadeIn()
+      $('#btnVerMas').fadeIn()
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+}
+
+function buscar2() {
+  offset = 0
+  $('#listaCatalogo').empty().hide()
+  // $('#listado').fadeOut(function(){
+  //   $('#listado').empty();
+  // });
+  filtrar();
+  filtrarPoretiqueta();
+  
+}
 
 function buscar() {
   offset = 0

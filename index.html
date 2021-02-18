@@ -28,7 +28,7 @@
             Home
           </ons-list-item>
          
-          <ons-list-item onclick="fn.load('catalogo.html')" tappable>
+          <ons-list-item onclick="fn.load('catalogo.html');mostrarListado()" tappable>
             Catalogo
           </ons-list-item>
 
@@ -51,6 +51,7 @@
 
 
   <template id="home.html">
+    <ons-navigator swipeable id="myNavigator">
     <ons-page>
       <ons-toolbar>
         <div class="left">
@@ -73,7 +74,38 @@
       </p>
 
     </ons-page>
+  </ons-navigator>
   </template>
+
+  <!-- DETALLE PRODCUTO -->
+
+  <template id="detalle.html">
+    <ons-page id="detalle">
+      <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button onclick="fn.open()">
+            <ons-icon icon="md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+        <div class="center">
+          Detalle
+        </div>
+        <div class="right">
+          <!-- boton para ir a LOGIN -->
+          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+          <!-- boton para Salir -->
+          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        </div>
+      </ons-toolbar>
+
+      <h4>Detalle del producto:</h4>
+      <ons-progress-circular indeterminate id="progressCargaDetalle"></ons-progress-circular>
+      <div id="contenedorDetalle"></div>
+
+    </ons-page>
+  </template>
+
+
 
   <!-- REGISTRO------------------------------------------------------------ -->
 
@@ -122,8 +154,8 @@
   <template id="login.html">
     <ons-page id="login">
       <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
+        <div class="left"  >
+          <ons-toolbar-button onclick="fn.open()" style="display: none">
             <ons-icon icon="md-menu"></ons-icon>
           </ons-toolbar-button>
         </div>
@@ -191,15 +223,13 @@
           <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
         </div>
       </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        Swipe right to open the menu!
-      </p>
-      
-      <div class="center">
-        <!-- BOTON DE PRUEBA PARA MOSTRAR LISTADO -->
-
-        <ons-button id="btnMostrarListado" onclick="mostrarListado()">MostrarListado</ons-button>
-
+      <div style="text-align: center; margin-top: 30px;">
+        <p>
+          <ons-input id="txtBusqueda" modifier="underbar" placeholder="texto buscado" float></ons-input>
+        </p>
+        <p style="margin-top: 30px;">
+          <ons-button onclick="buscar2()">Filtrar</ons-button>
+        </p>
       </div>
 
       <!-- CATALOGO LISTA -->
