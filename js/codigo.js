@@ -1,75 +1,13 @@
-// ons.boostrap();
-function filtrarPoretiqueta(){
-  let textoBuscado = $("#txtBusqueda").val();
-  let token = localStorage.getItem('token')
-
-  $.ajax({
-    url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
-    type: 'GET',
-    headers: {
-      'x-auth': token,
-    },
-    dataType: 'json',
-    success: function (dataTraida) {
-      let listaCatalogo = $('#listaCatalogo')
-      
-
-      dataTraida.data.forEach((elem) => {
-        let esta = false;
-        // ACA NO ANDA------------------------------------------------------------
-          for(let i=0; i<listaCatalogo.length; i++){
-              if(listaCatalogo.nomb===elem.nombre){
-                esta=true;
-              }
-          }
-        if(elem.etiquetas.includes(textoBuscado && !esta)){
-          
-        listaCatalogo.append(` 
-          <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
-           
-          
-          
-          <div class="left">
-              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
-            </div>
-
-            
-
-            <div class="center">
-            <span class="list-item__title">${elem._id}</span>
-              <span class="list-item__title">${elem.nombre}</span>
-              <span class="list-item__subtitle">${elem.precio}UYU</span>
-              <span class="list-item__subtitle">${elem.codigo}</span>
-              <span class="list-item__subtitle">${elem.etiquetas}</span>
-            </div>
-            <div class="right">
-              <span class="list-item__title">${elem.estado}</span>
-            </div>
-          </ons-list-item>`)
-        }
-      })
-      listaCatalogo.fadeIn()
-      // $('#btnVerMas').fadeIn()
-    
-    },
-
-    error: function (e1, e2, e3) {
-      console.log('Error...', e1, e2, e3)
-    },
-    complete: function () {
-      console.log('Fin!')
-    },
-  })
-}
+// CAPTURA DE EVENTOS-----------------------------------------------------------------------------
 
 document.addEventListener('init', function (event) {
   var page = event.target
 
   switch (page.id) {
     case `detalle`:
-      // let id = page.data.id
-      let id = "601bf7cf3b11a01a78163122"
-      // ons.notification.alert(id)
+      let id = page.data.id
+      // let id = "601bf7cf3b11a01a78163122"
+      ons.notification.alert(`el id pasado en el data es: ${id}`)
 
       detalleProducto(id)
 
@@ -82,17 +20,76 @@ document.addEventListener('init', function (event) {
   //     }
 })
 
-function irARegistro() {
-  document.querySelector('#myNavigator').pushPage('registro.html')
+// MANEJO DE PAGINAS CON MENU Y NAVIGATOR------------------------------------------------------
+
+window.fn = {};
+
+window.fn.open = function() {
+  var menu = document.getElementById('menu');
+  menu.open();
+};
+
+window.fn.load = function(page, data) {
+  var content = document.getElementById('myNavigator');
+  var menu = document.getElementById('menu');
+  content.pushPage(page, data)
+    .then(menu.close.bind(menu));
+};
+
+window.fn.pop = function() {
+  var content = document.getElementById('myNavigator');
+  content.popPage();
+};
+
+// LOGOUT-------------------------------------------------------------------------------
+
+function logout() {
+  localStorage.removeItem('token')
+  fn.load('login.html')
+}
+// LOGIN---------------------------------------------------------------------------------------------------
+
+function login() {
+  let username = $('#username').val()
+  let password = $('#password').val()
+  //   let jsonDatos={
+  //     'email': "jp@gmail.com",
+  //     'password': 12345678 ,
+  // };
+  if (username === '' || password === '') {
+    ons.notification.alert('Debe ingresar usuario y password')
+  } else {
+    // ACA TIRO EL AJAX PARA VER SI ME LOGUE
+
+    $.ajax({
+      url:
+        'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/usuarios/session',
+      type: 'POST',
+
+      dataType: 'json',
+      data: JSON.stringify({
+        email: username,
+        password: password,
+      }),
+
+      contentType: 'application/json',
+
+      success: function (response) {
+        console.log(response)
+        ons.notification.toast('Logueando...', { timeout: 1000 })
+        fn.load('home.html')
+        localStorage.setItem('token', response.data.token)
+      },
+      error: function (e1, e2, e3) {
+        console.log('Error...', e1, e2, e3)
+      },
+      complete: function () {
+        console.log('Fin!')
+      },
+    })
+  }
 }
 
-function irLogin() {
-  document.querySelector('#myNavigator').pushPage('login.html')
-}
-
-function navegar(page) {
-  document.querySelector('#myNavigator').pushPage(`${page}.html`)
-}
 
 // REGISTRO-------------------------------------------------------------------------------------------
 
@@ -139,83 +136,7 @@ function registrar() {
   }
 }
 
-// menu------
-window.fn = {}
-
-window.fn.open = function () {
-  var menu = document.getElementById('menu')
-
-  menu.open()
-}
-
-window.fn.load = function (page) {
-  var content = document.getElementById('content')
-  var menu = document.getElementById('menu')
-  content.load(page).then(menu.close.bind(menu))
-}
-
-window.fn.load = function (page, idProducto) {
-  var content = document.getElementById('content')
-  var menu = document.getElementById('menu')
-  content.load(page).then(menu.close.bind(menu))
-  data: {
-    id: idProducto
-  }
-}
-
-// fin menu---
-
-// LOGIN---------------------------------------------------------------------------------------------------
-
-function login() {
-  let username = $('#username').val()
-  let password = $('#password').val()
-  //   let jsonDatos={
-  //     'email': "jp@gmail.com",
-  //     'password': 12345678 ,
-  // };
-  if (username === '' || password === '') {
-    ons.notification.alert('Debe ingresar usuario y password')
-  } else {
-    // ACA TIRO EL AJAX PARA VER SI ME LOGUE
-
-    $.ajax({
-      url:
-        'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/usuarios/session',
-      type: 'POST',
-
-      dataType: 'json',
-      data: JSON.stringify({
-        email: username,
-        password: password,
-      }),
-
-      contentType: 'application/json',
-
-      success: function (response) {
-        console.log(response)
-        ons.notification.toast('Logueando...', { timeout: 1000 })
-        fn.load('home.html')
-        localStorage.setItem('token', response.data.token)
-      },
-      error: function (e1, e2, e3) {
-        console.log('Error...', e1, e2, e3)
-      },
-      complete: function () {
-        console.log('Fin!')
-      },
-    })
-  }
-}
-
-// LOGOUT-------------------------------------------------------------------------------
-
-function logout() {
-  localStorage.removeItem('token')
-  fn.load('login.html')
-}
-
-// LISTADO PRODUCTOS
+// LISTADO PRODUCTOS -------------------------------------------------------------------------------------------------------------------
 function mostrarListado() {
   let token = localStorage.getItem('token')
   console.log(token)
@@ -230,6 +151,7 @@ function mostrarListado() {
       let listaCatalogo = $('#listaCatalogo')
       console.log('data traida', dataTraida.data[0])
       console.log('data traida', dataTraida.data[0].urlImagen)
+      
 
       dataTraida.data.forEach((elem) => {
         
@@ -239,7 +161,7 @@ function mostrarListado() {
           
           
           <div class="left">
-              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
             </div>
 
             
@@ -269,7 +191,9 @@ function mostrarListado() {
   })
 }
 
-// DETALLE PRODUCTO
+
+
+// DETALLE PRODUCTO---------------------------------------------------------------------------------------------------------------------------
 
 function detalleProducto(id) {
   $.ajax({
@@ -291,7 +215,7 @@ function detalleProducto(id) {
       $('#contenedorDetalle').html(`
       
       <div>
-              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
       </div>    
 
       <div>
@@ -321,36 +245,10 @@ function detalleProducto(id) {
   })
 }
 
-/* <div class="left">
-              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos/${elem.urlImagen}">
-            </div> */
 
-// PRUEBA PARA OBTENER FOTO DE ARTICULO
-function obtenerFoto(urlFoto) {
-  let token = localStorage.getItem('token')
-  console.log(token)
-  $.ajax({
-    url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/${urlFoto}`,
-    type: 'GET',
-    headers: {
-      'x-auth': token,
-    },
-    dataType: 'json',
-    success: function (dataTraida) {
-      let url = dataTraida
-      return url
-    },
+// FILTRAR--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    error: function (e1, e2, e3) {
-      console.log('Error...', e1, e2, e3)
-    },
-    complete: function () {
-      console.log('Fin!')
-    },
-  })
-}
-
-// FILTRAR-----------------------------------------------------
+// FILTRO POR NOMBRE-------------
 function filtrar() {
   let busqueda = $('#txtBusqueda').val()
   $.ajax({
@@ -373,7 +271,7 @@ function filtrar() {
         
         
         <div class="left">
-            <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
           </div>
 
           
@@ -401,6 +299,71 @@ function filtrar() {
   })
 }
 
+// FILTRAR POR ETIQUETA---------------
+
+function filtrarPoretiqueta(){
+  let textoBuscado = $("#txtBusqueda").val();
+  let token = localStorage.getItem('token')
+
+  $.ajax({
+    url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
+    type: 'GET',
+    headers: {
+      'x-auth': token,
+    },
+    dataType: 'json',
+    success: function (dataTraida) {
+      let listaCatalogo = $('#listaCatalogo')
+      
+
+      dataTraida.data.forEach((elem) => {
+        let esta = false;
+        // ACA NO ANDA------------------------------------------------------------
+          for(let i=0; i<listaCatalogo.length; i++){
+              if(listaCatalogo.nomb===elem.nombre){
+                esta=true;
+              }
+          }
+        if(elem.etiquetas.includes(textoBuscado) && !esta){
+        esta=false; 
+        listaCatalogo.append(` 
+          <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
+           
+          
+          
+          <div class="left">
+              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+            </div>
+
+            
+
+            <div class="center">
+            <span class="list-item__title">${elem._id}</span>
+              <span class="list-item__title">${elem.nombre}</span>
+              <span class="list-item__subtitle">${elem.precio}UYU</span>
+              <span class="list-item__subtitle">${elem.codigo}</span>
+              <span class="list-item__subtitle">${elem.etiquetas}</span>
+            </div>
+            <div class="right">
+              <span class="list-item__title">${elem.estado}</span>
+            </div>
+          </ons-list-item>`)
+        }
+      })
+      listaCatalogo.fadeIn()
+      // $('#btnVerMas').fadeIn()
+    
+    },
+
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+}
+
 function buscar2() {
   offset = 0
   $('#listaCatalogo').empty().hide()
@@ -410,82 +373,4 @@ function buscar2() {
   filtrar();
   filtrarPoretiqueta();
   
-}
-
-function buscar() {
-  offset = 0
-  $('#listado').empty().hide()
-  // $('#listado').fadeOut(function(){
-  //   $('#listado').empty();
-  // });
-  busqueda()
-}
-
-function busqueda() {
-  let busqueda = $('#txtBusqueda').val()
-  $.ajax({
-    url: 'https://api.mercadolibre.com/sites/MLU/search',
-    type: 'GET',
-    data: {
-      q: busqueda,
-      offset: offset,
-      limit: 5,
-    },
-    dataType: 'json',
-    success: function (data) {
-      let listado = $('#listado')
-      console.log('data detalle', data)
-      data.results.forEach((elem) => {
-        listado.append(` <ons-list-header>Thumbnails and titles</ons-list-header>
-          <ons-list-item onClick="document.querySelector('#myNavigator').pushPage('detalle.html', {data: { id: '${elem.id}'}})">
-            <div class="left">
-              <img class="list-item__thumbnail" src=${elem.thumbnail}">
-            </div>
-            <div class="center">
-              <span class="list-item__title">${elem.title}</span><span class="list-item__subtitle">${elem.price} ${elem.currency_id}</span>
-            </div>
-          </ons-list-item>`)
-      })
-      listado.fadeIn()
-      $('#btnVerMas').fadeIn()
-    },
-    error: function (e1, e2, e3) {
-      console.log('Error...', e1, e2, e3)
-    },
-    complete: function () {
-      console.log('Fin!')
-    },
-  })
-}
-
-function verMas() {
-  offset += 5
-  busqueda()
-}
-
-function alerta() {
-  ons.notification.alert('Hola mundo')
-}
-
-function detalle(id) {
-  $.ajax({
-    url: `https://api.mercadolibre.com/items/${id}/description`,
-    type: 'GET',
-
-    dataType: 'json',
-    beforeSend: function () {
-      $(`#progresCargaDetalle`).show()
-    },
-    success: function (data) {
-      console.log('data', data)
-      $(`#pDetalle`).text(data.plain_text)
-      $(`#progresCargaDetalle`).hide()
-    },
-    error: function (e1, e2, e3) {
-      console.log('Error...', e1, e2, e3)
-    },
-    complete: function () {
-      console.log('Fin!')
-    },
-  })
 }

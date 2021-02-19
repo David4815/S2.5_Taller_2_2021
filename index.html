@@ -12,181 +12,126 @@
 <body>
 
 
-  <!-- Para navegar entre paginas cuando no esta el menu, con el menu usamos fn.load(page) -->
-  <!-- <ons-navigator swipeable id="myNavigator" page="login.html"></ons-navigator> -->
+  <ons-page>
+    <ons-splitter>
+        <ons-splitter-side id="menu" side="left" width="220px" swipe-target-width="150px" collapse swipeable>
+            <ons-page>
+                <ons-list>   
 
-
-
-
-  <!-- MENU DESPLAGABLE------------------------ -->
-  <ons-splitter>
-    <ons-splitter-side id="menu" side="left" width="220px" collapse swipeable>
-      <ons-page>
-        <ons-list>
+                    <ons-list-item onclick="fn.load('home.html')" tappable>
+                      Home
+                    </ons-list-item>
+    
+                    <ons-list-item onclick="fn.load('catalogo.html');mostrarListado()" tappable>
+                      Catalogo
+                    </ons-list-item>
           
-          <ons-list-item onclick="fn.load('home.html')" tappable>
-            Home
-          </ons-list-item>
-         
-          <ons-list-item onclick="fn.load('catalogo.html');mostrarListado()" tappable>
-            Catalogo
-          </ons-list-item>
+                    <ons-list-item onclick="fn.load('favoritos.html')" tappable>
+                      Favoritos
+                    </ons-list-item>
+          
+                    <ons-list-item onclick="fn.load('pedidos.html')" tappable>
+                      Pedidos
+                    </ons-list-item>
 
-          <ons-list-item onclick="fn.load('favoritos.html')" tappable>
-            Favoritos
-          </ons-list-item>
+                </ons-list>
+            </ons-page>
+        </ons-splitter-side>
+        <ons-splitter-content id="content" page="homePage.html"></ons-splitter-content>
+    </ons-splitter>
+</ons-page>
 
-          <ons-list-item onclick="fn.load('pedidos.html')" tappable>
-            Pedidos
-          </ons-list-item>
+<!-- HOME PAGE------------------------------------------------------ -->
 
-        </ons-list>
-      </ons-page>
-    </ons-splitter-side>
-    <ons-splitter-content id="content" page="login.html"></ons-splitter-content>
-  </ons-splitter>
-
-
-  <!-- PAGINA DE INICIO( esta en el menu )------------------------------------------------------------------------------------------------------- -->
+<ons-template id="homePage.html">
+  <ons-page id="homePage">
+    <ons-navigator id="myNavigator" page="login.html"></ons-navigator>
+  </ons-page>
+</ons-template>
 
 
-  <template id="home.html">
-    <ons-navigator swipeable id="myNavigator">
-    <ons-page>
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Main
-        </div>
-        <div class="right">
-          <!-- boton para ir a LOGIN -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-          <!-- boton para Salir -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        </div>
-      </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        Swipe right to open the menu!
+ <!-- LOGIN------------------------------------------------ -->
+
+ <template id="login.html">
+  <ons-page id="login">
+    <ons-toolbar>
+      <div class="left"  >
+        <ons-toolbar-button onclick="fn.open()" style="display: none">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Login
+      </div>
+    </ons-toolbar>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <p>
+        <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
       </p>
+      <p>
+        <ons-input id="password" modifier="underbar" type="password" placeholder="Password" value="12345678" float>
+        </ons-input>
+      </p>
+      <p style="margin-top: 30px;">
+        <ons-button onclick="login()">Sign in</ons-button>
+      </p>
+      
+      <ons-button modifier='quiet' onclick="fn.load('registro.html')">No tienes usuario? Registrate!</ons-button>
+    </div>
 
-    </ons-page>
-  </ons-navigator>
-  </template>
-
-  <!-- DETALLE PRODCUTO -->
-
-  <template id="detalle.html">
-    <ons-page id="detalle">
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Detalle
-        </div>
-        <div class="right">
-          <!-- boton para ir a LOGIN -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-          <!-- boton para Salir -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        </div>
-      </ons-toolbar>
-
-      <h4>Detalle del producto:</h4>
-      <ons-progress-circular indeterminate id="progressCargaDetalle"></ons-progress-circular>
-      <div id="contenedorDetalle"></div>
-
-    </ons-page>
-  </template>
+  </ons-page>
+</template>
 
 
 
-  <!-- REGISTRO------------------------------------------------------------ -->
+<!-- REGISTRO------------------------------------------------------------ -->
 
-  <template id="registro.html">
-    <ons-page id="registro">
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Settings
-        </div>
-      </ons-toolbar>
-
-      <div style="text-align: center; margin-top: 30px;">
-        <p>
-          <ons-input id="nombre" modifier="underbar" placeholder="nombre" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="apellido" modifier="underbar" placeholder="apellido" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="email" modifier="underbar" placeholder="email" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="direccion" modifier="underbar" placeholder="direccion" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="passwordRegistro" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-        </p>
-        <p style="margin-top: 30px;">
-          <ons-button onclick="registrar()">Registrarse</ons-button>
-        </p>
-        <!-- <ons-button modifier='quiet' onclick="irLogin()">Ya tienes usuario? Logueate!</ons-button> -->
-        <ons-button modifier='quiet' onclick="fn.load('login.html')">Ya tienes usuario? Logueate!</ons-button>
+<template id="registro.html">
+  <ons-page id="registro">
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
       </div>
-
-
-    </ons-page>
-  </template>
-
-  <!-- LOGIN------------------------------------------------ -->
-
-  <template id="login.html">
-    <ons-page id="login">
-      <ons-toolbar>
-        <div class="left"  >
-          <ons-toolbar-button onclick="fn.open()" style="display: none">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Login
-        </div>
-      </ons-toolbar>
-
-      <div style="text-align: center; margin-top: 30px;">
-        <p>
-          <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="password" modifier="underbar" type="password" placeholder="Password" value="12345678" float>
-          </ons-input>
-        </p>
-        <p style="margin-top: 30px;">
-          <ons-button onclick="login()">Sign in</ons-button>
-        </p>
-        <!-- <ons-button modifier='quiet' onclick="irARegistro()">No tienes usuario? Registrate!</ons-button> -->
-        <ons-button modifier='quiet' onclick="fn.load('registro.html')">No tienes usuario? Registrate!</ons-button>
+      <div class="center">
+        Registro
       </div>
+    </ons-toolbar>
 
-    </ons-page>
-  </template>
+    <div style="text-align: center; margin-top: 30px;">
+      <p>
+        <ons-input id="nombre" modifier="underbar" placeholder="nombre" float></ons-input>
+      </p>
+      <p>
+        <ons-input id="apellido" modifier="underbar" placeholder="apellido" float></ons-input>
+      </p>
+      <p>
+        <ons-input id="email" modifier="underbar" placeholder="email" float></ons-input>
+      </p>
+      <p>
+        <ons-input id="direccion" modifier="underbar" placeholder="direccion" float></ons-input>
+      </p>
+      <p>
+        <ons-input id="passwordRegistro" modifier="underbar" type="password" placeholder="Password" float></ons-input>
+      </p>
+      <p style="margin-top: 30px;">
+        <ons-button onclick="registrar()">Registrarse</ons-button>
+      </p>
+      <!-- <ons-button modifier='quiet' onclick="irLogin()">Ya tienes usuario? Logueate!</ons-button> -->
+      <ons-button modifier='quiet' onclick="fn.load('login.html')">Ya tienes usuario? Logueate!</ons-button>
+    </div>
 
 
+  </ons-page>
+</template>
 
-  <!-- SE PUEDE USAR COMO PLANTILLA PARA CREAR PAGINAS CON MENU -->
 
-  <!-- <template id="settings.html">
+<!-- HOME ( esta en el menu )------------------------------------------------------------------------------------------------------- -->
+
+<template id="home.html">
+ 
   <ons-page>
     <ons-toolbar>
       <div class="left">
@@ -195,214 +140,152 @@
         </ons-toolbar-button>
       </div>
       <div class="center">
-        Settings
+        Home
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="logout()">Salir</ons-button>
       </div>
     </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
+
   </ons-page>
-</template> -->
+
+</template>
 
 
 
-  <!-- Catalogo -->
+<!-- Catalogo ---------------------------------------------------------------------------------------------------->
 
-  <template id="catalogo.html">
-    <ons-page>
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Catalogo
-        </div>
-        <div class="right">
-          <!-- boton para ir a LOGIN -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-          <!-- boton para Salir -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        </div>
-      </ons-toolbar>
-      <div style="text-align: center; margin-top: 30px;">
-        <p>
-          <ons-input id="txtBusqueda" modifier="underbar" placeholder="texto buscado" float></ons-input>
-        </p>
-        <p style="margin-top: 30px;">
-          <ons-button onclick="buscar2()">Filtrar</ons-button>
-        </p>
-      </div>
-
-      <!-- CATALOGO LISTA -->
-      <div class="center" >
-        <ons-list id="listaCatalogo">
-
-        </ons-list> 
-
-      </div>
-       
-     
-
-
-    </ons-page>
-  </template>
-
-  <!-- Favoritos -->
-
-  <template id="favoritos.html">
-    <ons-page>
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Favoritos
-        </div>
-        <div class="right">
-          <!-- boton para ir a LOGIN -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-          <!-- boton para Salir -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        </div>
-      </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        Swipe right to open the menu!
-      </p>
-
-    </ons-page>
-  </template>
-
-  <!-- Pedidos -->
-
-  <template id="pedidos.html">
-    <ons-page>
-      <ons-toolbar>
-        <div class="left">
-          <ons-toolbar-button onclick="fn.open()">
-            <ons-icon icon="md-menu"></ons-icon>
-          </ons-toolbar-button>
-        </div>
-        <div class="center">
-          Pedidos
-        </div>
-        <div class="right">
-          <!-- boton para ir a LOGIN -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-          <!-- boton para Salir -->
-          <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        </div>
-      </ons-toolbar>
-      <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-        Swipe right to open the menu!
-      </p>
-
-    </ons-page>
-  </template>
-
-  <!-- FIN -->
-  <!-- <template id="inicio.html">
-    <ons-page id="inicio">
-      <ons-toolbar>
-        <div class="center">STORE
-        </div> 
-      </ons-toolbar>
-  
-      <div style="text-align: center; margin-top: 30px;">
-          <p>
-            <ons-input id="txtBusqueda" modifier="underbar" value='perro' placeholder="Texto a buscar" float></ons-input>
-          </p>
-      
-          <p style="margin-top: 30px;">
-            <ons-button onclick="buscar()">Buscar</ons-button>
-          </p>
-          
-
-          <ons-list modifier="inset" id='listado' style="display: none">       
-     
-          </ons-list>
-        
-
-        </div>
-        <div style="text-align: center; margin-top: 10px;">
-        
-          <ons-button id="btnVerMas"onclick="verMas()" style="display: none">Ver mas</ons-button>  
-
-        </div>
-        
-        
-        <ons-button onclick="alerta()">alerta</ons-button>
-    </ons-page>
-  </template> -->
-
-
-  <!-- <template id="detalle.html">
-    <ons-page id="detalle">
-      <ons-toolbar>
-        <div class='left'><ons-back-button>Volver</ons-back-button></div>
-        <div class="center">Detalle
-        </div> 
-      </ons-toolbar>
-  
-  <h2>Detalle del producto:</h2>
-  <ons-progress-circular indeterminate id='progresCargaDetalle'></ons-progress-circular>
-  <p id='pDetalle'></p>
-
-        <ons-list modifier="inset" id='listado' > </ons-list>
-
-    </ons-page>
-  </template> -->
-
-
-  <!-- <template id="page1.html">
-  <ons-page id="page1">
+<template id="catalogo.html">
+  <ons-page>
     <ons-toolbar>
-      <div class="center">App Mercadolibre
-      </div> 
-    </ons-toolbar>
-
-    <div style="text-align: center; margin-top: 30px;">
-        <p>
-          <ons-input id="usernameLogin" modifier="underbar" placeholder="Username" float></ons-input>
-        </p>
-        <p>
-          <ons-input id="passwordLogin" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-        </p>
-        <p style="margin-top: 30px;">
-          <ons-button onclick="login()">Sign in</ons-button>
-        </p>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
       </div>
+      <div class="center">
+        Catalogo
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+      </div>
+    </ons-toolbar>
+    <div style="text-align: center; margin-top: 30px;">
+      <p>
+        <ons-input id="txtBusqueda" modifier="underbar" placeholder="texto buscado" float></ons-input>
+      </p>
+      <p style="margin-top: 30px;">
+        <ons-button onclick="buscar2()">Filtrar</ons-button>
+      </p>
+    </div>
+
+    <!-- CATALOGO LISTA -->
+    <div class="center" >
+      <ons-list id="listaCatalogo">
+
+      </ons-list> 
+
+    </div>
+     
+   
+
 
   </ons-page>
-</template> -->
-
-  <!-- <template id="registro.html">
-    <ons-page id="registro">
-      <ons-toolbar>
-        <div class="center">App Mercadolibre
-        </div> 
-      </ons-toolbar>
-  
-      <div style="text-align: center; margin-top: 30px;">
-          <p>
-            <ons-input id="usernameRegistro" modifier="underbar" placeholder="Username" float></ons-input>
-          </p>
-          <p>
-            <ons-input id="passwordRegistro" modifier="underbar" type="password" placeholder="Password" float></ons-input>
-          </p>
-          <p style="margin-top: 30px;">
-            <ons-button onclick="login()">Registrarse</ons-button>
-          </p>
-        </div>
-        
-    </ons-page>
-  </template> -->
+</template>
 
 
+<!-- DETALLE PRODCUTO ------------------------------------------------------------------------------------------------------------------------------------------->
+
+<template id="detalle.html">
+  <ons-page id="detalle">
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Detalle
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+      </div>
+    </ons-toolbar>
+
+    <h4>Detalle del producto:</h4>
+    <ons-progress-circular indeterminate id="progressCargaDetalle"></ons-progress-circular>
+    <div id="contenedorDetalle"></div>
+
+  </ons-page>
+</template>
 
 
-  <script src="js/jquery-3.5.1.js"></script>
-  <script src="js/codigo.js"></script>
+<!-- Favoritos -->
+
+<template id="favoritos.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Favoritos
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
+
+  </ons-page>
+</template>
+
+<!-- Pedidos -->
+
+<template id="pedidos.html">
+  <ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Pedidos
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
+
+  </ons-page>
+</template>
+
 
 </body>
 
