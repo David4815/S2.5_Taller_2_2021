@@ -7,7 +7,7 @@ document.addEventListener('init', function (event) {
     case `detalle`:
       let id = page.data.id
       // let id = "601bf7cf3b11a01a78163122"
-      ons.notification.alert(`el id pasado en el data es: ${id}`)
+      // ons.notification.alert(`el id pasado en el data es: ${id}`)
 
       detalleProducto(id)
 
@@ -148,7 +148,8 @@ function mostrarListado() {
     },
     dataType: 'json',
     success: function (dataTraida) {
-      let listaCatalogo = $('#listaCatalogo')
+      let listaCatalogo = $('#listaCatalogo');
+      listaCatalogo.html("");
       console.log('data traida', dataTraida.data[0])
       console.log('data traida', dataTraida.data[0].urlImagen)
       
@@ -167,19 +168,29 @@ function mostrarListado() {
             
 
             <div class="center">
-            <span class="list-item__title">${elem._id}</span>
               <span class="list-item__title" id="nomb">${elem.nombre}</span>
               <span class="list-item__subtitle">${elem.precio}UYU</span>
               <span class="list-item__subtitle">${elem.codigo}</span>
               <span class="list-item__subtitle">${elem.etiquetas}</span>
             </div>
+
             <div class="right">
               <span class="list-item__title">${elem.estado}</span>
             </div>
-          </ons-list-item>`)
+
+          </ons-list-item>
+          
+          <span class="list-item__subtitle">
+              <ons-button modifier="quiet">
+                  <ons-icon icon="md-face"></ons-icon>
+                    Agregar a favoritos
+              </ons-button>
+          </span>
+            
+            `)
       })
+     
       listaCatalogo.fadeIn()
-      // $('#btnVerMas').fadeIn()
     },
 
     error: function (e1, e2, e3) {
@@ -225,6 +236,12 @@ function detalleProducto(id) {
               <span class="list-item__subtitle">${response.data.etiquetas}</span>
               <span class="list-item__subtitle">${response.data.descripcion}</span>
               <span class="list-item__subtitle">${response.data.puntaje}</span>
+              <span class="list-item__subtitle">   
+                  <ons-button modifier="quiet">
+                      <ons-icon icon="md-face"></ons-icon>
+                          Comprar
+                  </ons-button> 
+              </span>
        </div>
           <div class="right">
               <span class="list-item__title">${response.data.estado}</span>
