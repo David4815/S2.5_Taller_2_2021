@@ -5,13 +5,27 @@ document.addEventListener('init', function (event) {
 
   switch (page.id) {
     case `detalle`:
-      let id = page.data.id
+      let id = page.data.id;
       // let id = "601bf7cf3b11a01a78163122"
       // ons.notification.alert(`el id pasado en el data es: ${id}`)
+      detalleProducto(id);
+      break;
 
-      detalleProducto(id)
+    case `mapa`:
 
-      break
+      setTimeout(() => {}, 1000);
+      var mymap = L.map('mapid').setView([-34.9176711, -56.152399], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+    break;
+
+    case `nuevoPedido`:
+      let idproducto = page.data.id;
+    mostrarNuevoPedido(idproducto);
+    break;
+
   }
 
   // if (page.id === 'detalle') {
@@ -40,6 +54,22 @@ window.fn.pop = function() {
   var content = document.getElementById('myNavigator');
   content.popPage();
 };
+
+// javascript select
+
+function editSelects(event) {
+  document.getElementById('choose-sel').removeAttribute('modifier');
+  if (event.target.value == 'material' || event.target.value == 'underbar') {
+    document.getElementById('choose-sel').setAttribute('modifier', event.target.value);
+  }
+}
+function addOption(event) {
+  const option = document.createElement('option');
+  var text = document.getElementById('optionLabel').value;
+  option.innerText = text;
+  text = '';
+  document.getElementById('dynamic-sel').appendChild(option);
+}
 
 // LOGOUT-------------------------------------------------------------------------------
 
@@ -158,6 +188,8 @@ function mostrarListado() {
         
         listaCatalogo.append(` 
           <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
+
+          
            
           
           
@@ -220,7 +252,18 @@ function detalleProducto(id) {
     success: function (response) {
       // console.log('data', data)
       // ons.notification.alert(response.data.nombre)
-      
+      let botonComprar = "";
+      if(response.data.estado === "en stock"){
+
+        botonComprar = `<span class="list-item__subtitle">   
+        <ons-button modifier="quiet" onClick="fn.load('nuevoPedido.html', {data: { id: '${id}'}})">
+                        
+            <ons-icon icon="md-face"></ons-icon>
+                Comprar
+        </ons-button> 
+    </span>`
+
+      }
 
      
       $('#contenedorDetalle').html(`
@@ -236,17 +279,15 @@ function detalleProducto(id) {
               <span class="list-item__subtitle">${response.data.etiquetas}</span>
               <span class="list-item__subtitle">${response.data.descripcion}</span>
               <span class="list-item__subtitle">${response.data.puntaje}</span>
-              <span class="list-item__subtitle">   
-                  <ons-button modifier="quiet">
-                      <ons-icon icon="md-face"></ons-icon>
-                          Comprar
-                  </ons-button> 
-              </span>
-       </div>
-          <div class="right">
-              <span class="list-item__title">${response.data.estado}</span>
-            </div>
+             
+              ${botonComprar}
 
+       </div>
+        
+       <div class="right">
+              <span class="list-item__title">${response.data.estado}</span>
+        </div>
+      
       
       `)
 
@@ -391,3 +432,109 @@ function buscar2() {
   filtrarPoretiqueta();
   
 }
+
+
+// NUEVO PEDIDO ------------------------------------------------------------------------------
+
+function mostrarNuevoPedido(id){
+  
+// INGRESO NUEVO PEDIDO
+
+$.ajax({
+  url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos/${id}`,
+  type: 'GET',
+  headers: {
+    'x-auth': localStorage.getItem("token"),
+  },
+  dataType: 'json',
+  // beforeSend: function () {
+  //   $(`#progresCargaDetalle`).show()
+  // },
+  success: function (response) {
+    // console.log('data', data)
+    // ons.notification.alert(response.data.nombre)
+    
+  //   for(let i=0; i<sucursales.length; i++){
+  //     `$('#choose-sel').append(<option value=${sucursales[i]}></option>)`
+  // }
+
+   
+    $('#ContenedorNuevoPedido').html(`
+    
+    <div>
+            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
+    </div>    
+
+    <div>
+            <span class="list-item__title">${response.data.nombre}</span>
+            <span class="list-item__subtitle">${response.data.precio}UYU</span>
+            <p>
+              <ons-input id="cantidadPedida" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
+            </p>
+           
+            <h3>Choose a type of select with different modifiers:</h3>
+
+ 
+
+              <div id="lista"> </div>
+
+        
+     </div>
+        
+    `
+    
+    )
+    
+    
+    
+    // $(`#progresCargaDetalle`).hide()
+    $('#progressCargaDetalle').hide();
+  },
+  error: function (e1, e2, e3) {
+    console.log('Error...', e1, e2, e3)
+  },
+  complete: function () {
+    console.log('Fin!')
+  },
+})
+
+
+   // TRAER SUCURSALES
+   $.ajax({
+    url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/sucursales`,
+    type: 'GET',
+    headers: {
+      'x-auth': localStorage.getItem("token"),
+    },
+    dataType: 'json',
+    // beforeSend: function () {
+    //   $(`#progresCargaDetalle`).show()
+    // },
+    success: function (suc) {
+      
+
+     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)">         
+     </ons-select>`) 
+      for(let i=0; i<suc.data.length; i++){
+        $('.select-input').append(`<option value="hola">${suc.data[i].nombre}</option>`) 
+    }
+
+      
+  
+      console.log("sucursales", suc);
+      console.log("sucursales2data", suc.data[0].nombre);
+    // console.log("response", suc.data);
+    
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+
+  
+}
+
+

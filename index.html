@@ -4,9 +4,25 @@
 <head>
   <link rel="stylesheet" href="css/onsenui.css">
   <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <!-- CREADO PARA ESTILOS DEL MAPA Leaflet -->
+  <link rel="stylesheet" href="css/estilos.css">
+  
+  <!-- Mapa CSS - Leaflet---------------------------------------------------- -->
+  <link rel="stylesheet" href="css/leaflet.css">
+  <!-- fin Mapa CSS -->
+
+
+  
   <script src="js/onsenui.js"></script>
   <script src="js/jquery-3.5.1.js"></script>
   <script src="js/codigo.js"></script>
+
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="js/leaflet.js"></script>
+
+  
+
+
 </head>
 
 <body>
@@ -32,6 +48,10 @@
           
                     <ons-list-item onclick="fn.load('pedidos.html')" tappable>
                       Pedidos
+                    </ons-list-item>
+
+                    <ons-list-item onclick="fn.load('mapa.html')" tappable>
+                      Mapa
                     </ons-list-item>
 
                 </ons-list>
@@ -147,6 +167,7 @@
         <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
         <ons-button id="btnMostrarListado" onclick="logout()">Salir</ons-button>
+
       </div>
     </ons-toolbar>
     <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
@@ -261,6 +282,38 @@
   </ons-page>
 </template>
 
+
+<!-- NUEVO Pedidos -->
+
+<template id="nuevoPedido.html">
+  <ons-page id="nuevoPedido">
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Nuevo Pedidos
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
+
+    <div id="ContenedorNuevoPedido">
+
+    </div>
+
+  </ons-page>
+</template>
+
 <!-- Pedidos -->
 
 <template id="pedidos.html">
@@ -288,6 +341,38 @@
   </ons-page>
 </template>
 
+
+<!-- Mapa -->
+
+<template id="mapa.html">
+  <ons-page id="mapa"> 
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button onclick="fn.open()">
+          <ons-icon icon="md-menu"></ons-icon>
+        </ons-toolbar-button>
+        <ons-back-button>atras</ons-back-button>
+      </div>
+      <div class="center">
+        Mapa
+      </div>
+      <div class="right">
+        <!-- boton para ir a LOGIN -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
+        <!-- boton para Salir -->
+        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <!-- ir atras -->
+        
+      </div>
+    </ons-toolbar>
+    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+      Swipe right to open the menu!
+    </p>
+
+    <div id="mapid"></div>
+
+  </ons-page>
+</template>
 
 </body>
 
