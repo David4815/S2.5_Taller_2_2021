@@ -14,16 +14,19 @@ document.addEventListener('init', function (event) {
     case `mapa`:
 
       setTimeout(() => {}, 1000);
-      var mymap = L.map('mapid').setView([-34.9176711, -56.152399], 15);
+      var mymap2 = L.map('mapid').setView([-34.9176711, -56.152399], 15);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mymap);
+    }).addTo(mymap2);
     break;
 
     case `nuevoPedido`:
       let idproducto = page.data.id;
     mostrarNuevoPedido(idproducto);
+
+    
+
     break;
 
   }
@@ -457,7 +460,8 @@ $.ajax({
   //   for(let i=0; i<sucursales.length; i++){
   //     `$('#choose-sel').append(<option value=${sucursales[i]}></option>)`
   // }
-
+    let precioTotal = response.data.precio;
+    
    
     $('#ContenedorNuevoPedido').html(`
     
@@ -471,12 +475,17 @@ $.ajax({
             <p>
               <ons-input id="cantidadPedida" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
             </p>
+            <div id="precioTotal">
+            <p>Precio total ${precioTotal}</p>
+            </div>
+
            
-            <h3>Choose a type of select with different modifiers:</h3>
+            <h3>Seleccione sucursal de retiro:</h3>
 
  
 
               <div id="lista"> </div>
+            
 
         
      </div>
@@ -513,10 +522,13 @@ $.ajax({
     success: function (suc) {
       
 
-     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)">         
+     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)"> 
+     <select class="select-input" id="select">
+  
+  </select>        
      </ons-select>`) 
       for(let i=0; i<suc.data.length; i++){
-        $('.select-input').append(`<option value="hola">${suc.data[i].nombre}</option>`) 
+        $('#select').append(`<option value="hola">${suc.data[i].nombre}</option>`) 
     }
 
       
