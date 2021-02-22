@@ -27,10 +27,29 @@
 
 <body>
 
+<!-- -------------------INDICE HTML ---------------->
+
+  <!--                01 MENU                -->
+  <!--                02 HOME PAGE           -->
+  <!--                03 LOGIN               -->
+  <!--                04 REGISTRO            -->
+  <!--                05 HOME                -->
+  <!--                06 CATALOGO            -->
+  <!--                07 DETALLE             -->
+  <!--                08 FAVORITOS           -->
+  <!--                09 NUEVOS PEDIDOS      -->
+  <!--                10 PEDIDOS             -->
+  <!--                11 MAPA                -->
+
+<!-- --------------------------------------- -->
+
+
+
+<!-- 01 - MENU------------------------------------------------------------------------------------------------------------------- -->
 
   <ons-page>
-    <ons-splitter>
-        <ons-splitter-side id="menu" side="left" width="220px" swipe-target-width="150px" collapse swipeable>
+    <ons-splitter >
+        <ons-splitter-side id="menu" side="left" width="220px" swipe-target-width="150px" collapse swipeable style="display: none" >
             <ons-page>
                 <ons-list>   
 
@@ -61,7 +80,7 @@
     </ons-splitter>
 </ons-page>
 
-<!-- HOME PAGE------------------------------------------------------ -->
+<!-- 02 - HOME PAGE------------------------------------------------------ -->
 
 <ons-template id="homePage.html">
   <ons-page id="homePage">
@@ -70,16 +89,16 @@
 </ons-template>
 
 
- <!-- LOGIN------------------------------------------------ -->
+ <!-- 03 - LOGIN------------------------------------------------ -->
 
  <template id="login.html">
   <ons-page id="login">
     <ons-toolbar>
-      <div class="left"  >
+      <!-- <div class="left"  >
         <ons-toolbar-button onclick="fn.open()" style="display: none">
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
-      </div>
+      </div> -->
       <div class="center">
         Login
       </div>
@@ -105,16 +124,16 @@
 
 
 
-<!-- REGISTRO------------------------------------------------------------ -->
+<!-- 04 - REGISTRO------------------------------------------------------------ -->
 
 <template id="registro.html">
   <ons-page id="registro">
     <ons-toolbar>
-      <div class="left">
+      <!-- <div class="left">
         <ons-toolbar-button onclick="fn.open()">
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
-      </div>
+      </div> -->
       <div class="center">
         Registro
       </div>
@@ -148,11 +167,11 @@
 </template>
 
 
-<!-- HOME ( esta en el menu )------------------------------------------------------------------------------------------------------- -->
+<!-- 05 - HOME (esta en el menu )------------------------------------------------------------------------------------------------------- -->
 
 <template id="home.html">
  
-  <ons-page>
+  <ons-page id="home">
     <ons-toolbar>
       <div class="left">
         <ons-toolbar-button onclick="fn.open()">
@@ -181,10 +200,10 @@
 
 
 
-<!-- Catalogo ---------------------------------------------------------------------------------------------------->
+<!-- 06 - Catalogo(esta en el menu) ---------------------------------------------------------------------------------------------------->
 
 <template id="catalogo.html">
-  <ons-page>
+  <ons-page id="catalogo">
     <ons-toolbar>
       <div class="left">
         <ons-toolbar-button onclick="fn.open()">
@@ -225,16 +244,16 @@
 </template>
 
 
-<!-- DETALLE PRODCUTO ------------------------------------------------------------------------------------------------------------------------------------------->
+<!-- 07 - DETALLE PRODCUTO ------------------------------------------------------------------------------------------------------------------------------------------->
 
 <template id="detalle.html">
   <ons-page id="detalle">
     <ons-toolbar>
       <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
+        <!-- <ons-toolbar-button onclick="fn.open()">
           <ons-icon icon="md-menu"></ons-icon>
-          <ons-back-button>atras</ons-back-button>
-        </ons-toolbar-button>
+        </ons-toolbar-button> -->
+        <ons-back-button>atras</ons-back-button>
       </div>
       <div class="center">
         Detalle
@@ -255,10 +274,10 @@
 </template>
 
 
-<!-- Favoritos -->
+<!-- 08 - Favoritos (esta en el menu) ---------------------------------------------------------------------->
 
 <template id="favoritos.html">
-  <ons-page>
+  <ons-page id="favoritos">
     <ons-toolbar>
       <div class="left">
         <ons-toolbar-button onclick="fn.open()">
@@ -279,19 +298,23 @@
       Swipe right to open the menu!
     </p>
 
+    <div id="listaFavoritos">    
+    </div>
+
   </ons-page>
 </template>
 
 
-<!-- NUEVO Pedidos -->
+<!-- 09 - NUEVO Pedidos ---------------------------------------------------------------------------------------------------------->
 
 <template id="nuevoPedido.html">
   <ons-page id="nuevoPedido">
     <ons-toolbar>
       <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
+        <!-- <ons-toolbar-button onclick="fn.open()">
           <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button>
+        </ons-toolbar-button> -->
+        <ons-back-button>atras</ons-back-button>
       </div>
       <div class="center">
         Nuevo Pedidos
@@ -314,10 +337,10 @@
   </ons-page>
 </template>
 
-<!-- Pedidos -->
+<!-- 10 - Pedidos ------------------------------------------------------------------------------------------------------------------------------------------->
 
 <template id="pedidos.html">
-  <ons-page>
+  <ons-page id="pedidos"> 
     <ons-toolbar>
       <div class="left">
         <ons-toolbar-button onclick="fn.open()">
@@ -338,11 +361,14 @@
       Swipe right to open the menu!
     </p>
 
+    <div id="listaPedidos">
+    </div>
+
   </ons-page>
 </template>
 
 
-<!-- Mapa -->
+<!-- 11 - Mapa ---------------------------------------------------------------------------------------------------------------------------->
 
 <template id="mapa.html">
   <ons-page id="mapa"> 

@@ -1,43 +1,62 @@
-// CAPTURA DE EVENTOS-----------------------------------------------------------------------------
+
+//  --------------------- INDICE JS ---------------------------------------------------
+
+//              01 - CAPTURA EVENTOS INIT
+//              02 - MANEJO DE PAGINAS CON MENU Y NAVIGATOR
+//              03 - codigo para el SELECT (combo desplegable en sucursales)
+//              04 - LOGOUT
+//              05 - LOGIN
+//              06 - REGISTRO
+//              07 - LISTADO PRODUCTOS
+//              08 - DETELLE DE PORDUCTO
+//              09 - FILTRAR
+//                09.A - FILTRAR POR NOMBRE
+//                09.A - FILTRAR POR ETIQUETA
+//              10 - APLICAR FILTROS POR NOMBRE Y ETIQUETA
+//              11 - NUEVO PEDIDO
+// ---------------------------------------------------------------------------------------
+
+
+
+// 01 - CAPTURA DE EVENTOS-----------------------------------------------------------------------------
 
 document.addEventListener('init', function (event) {
   var page = event.target
 
   switch (page.id) {
+
     case `detalle`:
-      let id = page.data.id;
-      // let id = "601bf7cf3b11a01a78163122"
-      // ons.notification.alert(`el id pasado en el data es: ${id}`)
-      detalleProducto(id);
-      break;
+
+        let id = page.data.id;
+        detalleProducto(id);       
+        break;
 
     case `mapa`:
 
-      setTimeout(() => {}, 1000);
-      var mymap2 = L.map('mapid').setView([-34.9176711, -56.152399], 15);
+        setTimeout(() => {}, 1000);
+        var mymap2 = L.map('mapid').setView([-34.9176711, -56.152399], 15);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mymap2);
-    break;
+        }).addTo(mymap2);
+       break;
 
     case `nuevoPedido`:
-      let idproducto = page.data.id;
-    mostrarNuevoPedido(idproducto);
 
-    
+        let idproducto = page.data.id;
+        mostrarNuevoPedido(idproducto);
+        break;
 
-    break;
+    case `pedidos`:
+
+        realizarPedido();
 
   }
 
-  // if (page.id === 'detalle') {
-  //       let id = page.data.id;
-  //       detalle(id);
-  //     }
+
 })
 
-// MANEJO DE PAGINAS CON MENU Y NAVIGATOR------------------------------------------------------
+// 02 - MANEJO DE PAGINAS CON MENU Y NAVIGATOR------------------------------------------------------
 
 window.fn = {};
 
@@ -58,7 +77,7 @@ window.fn.pop = function() {
   content.popPage();
 };
 
-// javascript select
+// 03 - codigo para el SELECT (combo desplegable en sucursales)---------------------------------------------------
 
 function editSelects(event) {
   document.getElementById('choose-sel').removeAttribute('modifier');
@@ -74,32 +93,35 @@ function addOption(event) {
   document.getElementById('dynamic-sel').appendChild(option);
 }
 
-// LOGOUT-------------------------------------------------------------------------------
+// 04 - LOGOUT--------------------------------------------------------------------------------------------------
 
 function logout() {
   localStorage.removeItem('token')
   fn.load('login.html')
 }
-// LOGIN---------------------------------------------------------------------------------------------------
+// 05 - LOGIN---------------------------------------------------------------------------------------------------
 
 function login() {
   let username = $('#username').val()
   let password = $('#password').val()
+
   //   let jsonDatos={
   //     'email': "jp@gmail.com",
   //     'password': 12345678 ,
   // };
+
+  // VERIFICACION PARA EVITAR PEDIDOS INNECESARIOS AL SERVIDOR
   if (username === '' || password === '') {
     ons.notification.alert('Debe ingresar usuario y password')
   } else {
     // ACA TIRO EL AJAX PARA VER SI ME LOGUE
-
     $.ajax({
       url:
         'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/usuarios/session',
       type: 'POST',
 
       dataType: 'json',
+      // IMPORTANTE PASAR A JSON
       data: JSON.stringify({
         email: username,
         password: password,
@@ -108,10 +130,13 @@ function login() {
       contentType: 'application/json',
 
       success: function (response) {
-        console.log(response)
+
         ons.notification.toast('Logueando...', { timeout: 1000 })
         fn.load('home.html')
         localStorage.setItem('token', response.data.token)
+        // SE AGREGA DISPLAY NONE AL INICIO EN EL MENU Y AL LOGUEARSE SE PONE VISIBLE EL MENU
+        $("#menu").css('display', '');
+        
       },
       error: function (e1, e2, e3) {
         console.log('Error...', e1, e2, e3)
@@ -124,7 +149,7 @@ function login() {
 }
 
 
-// REGISTRO-------------------------------------------------------------------------------------------
+// 06 - REGISTRO-------------------------------------------------------------------------------------------
 
 function registrar() {
   let nombre = $('#nombre').val()
@@ -154,8 +179,10 @@ function registrar() {
         password: passwordRegistro,
       }),
       contentType: 'application/json',
+      // CUANDO TENGO EXITO NO RECIBO NADA?? NO LLEGA NADA EN EL DATA PERO FUNCIONA
       success: function (data) {
-        ons.notification.alert(`${data.nombre}`, data)
+        // console.log(data);
+        // ons.notification.alert(data.nombre)
         ons.notification.toast('Logueando...', { timeout: 1000 })
         document.querySelector('#myNavigator').pushPage('login.html')
       },
@@ -169,10 +196,12 @@ function registrar() {
   }
 }
 
-// LISTADO PRODUCTOS -------------------------------------------------------------------------------------------------------------------
+// 07 - LISTADO PRODUCTOS -------------------------------------------------------------------------------------------------------------------
 function mostrarListado() {
+
+  // TOKEN
   let token = localStorage.getItem('token')
-  console.log(token)
+  
   $.ajax({
     url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
     type: 'GET',
@@ -183,26 +212,19 @@ function mostrarListado() {
     success: function (dataTraida) {
       let listaCatalogo = $('#listaCatalogo');
       listaCatalogo.html("");
-      console.log('data traida', dataTraida.data[0])
-      console.log('data traida', dataTraida.data[0].urlImagen)
-      
+      // console.log('data traida', dataTraida.data[0])
+      // console.log('data traida', dataTraida.data[0].urlImagen)      
 
       dataTraida.data.forEach((elem) => {
         
         listaCatalogo.append(` 
           <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
-
-          
-           
-          
-          
+        
           <div class="left">
               <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
-            </div>
+          </div>
 
-            
-
-            <div class="center">
+           <div class="center">
               <span class="list-item__title" id="nomb">${elem.nombre}</span>
               <span class="list-item__subtitle">${elem.precio}UYU</span>
               <span class="list-item__subtitle">${elem.codigo}</span>
@@ -227,7 +249,6 @@ function mostrarListado() {
      
       listaCatalogo.fadeIn()
     },
-
     error: function (e1, e2, e3) {
       console.log('Error...', e1, e2, e3)
     },
@@ -239,7 +260,7 @@ function mostrarListado() {
 
 
 
-// DETALLE PRODUCTO---------------------------------------------------------------------------------------------------------------------------
+// 08 - DETALLE PRODUCTO---------------------------------------------------------------------------------------------------------------------------
 
 function detalleProducto(id) {
   $.ajax({
@@ -307,9 +328,9 @@ function detalleProducto(id) {
 }
 
 
-// FILTRAR--------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 09 - FILTRAR--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// FILTRO POR NOMBRE-------------
+// 09.A - FILTRO POR NOMBRE-------------
 function filtrar() {
   let busqueda = $('#txtBusqueda').val()
   $.ajax({
@@ -360,7 +381,7 @@ function filtrar() {
   })
 }
 
-// FILTRAR POR ETIQUETA---------------
+// 09.B FILTRAR POR ETIQUETA---------------
 
 function filtrarPoretiqueta(){
   let textoBuscado = $("#txtBusqueda").val();
@@ -425,6 +446,8 @@ function filtrarPoretiqueta(){
   })
 }
 
+// 10 - APLICAR FILTROS POR NOMBRE Y ETIQUETA -------------------------------------------------------------------
+
 function buscar2() {
   offset = 0
   $('#listaCatalogo').empty().hide()
@@ -437,7 +460,7 @@ function buscar2() {
 }
 
 
-// NUEVO PEDIDO ------------------------------------------------------------------------------
+// 11 - NUEVO PEDIDO ---------------------------------------------------------------------------------------------
 
 function mostrarNuevoPedido(id){
   
@@ -486,6 +509,14 @@ $.ajax({
 
               <div id="lista"> </div>
             
+              
+              <span class="list-item__subtitle">   
+              <ons-button modifier="quiet" onClick="fn.load('pedidos.html', {data: { id: '${id}'}})">
+                              
+                  <ons-icon icon="md-face"></ons-icon>
+                      Comprar
+              </ons-button> 
+          </span>
 
         
      </div>
@@ -531,11 +562,8 @@ $.ajax({
         $('#select').append(`<option value="hola">${suc.data[i].nombre}</option>`) 
     }
 
-      
-  
       console.log("sucursales", suc);
-      console.log("sucursales2data", suc.data[0].nombre);
-    // console.log("response", suc.data);
+      // console.log("sucursales2data", suc.data[0].nombre);
     
     },
     error: function (e1, e2, e3) {
@@ -548,5 +576,50 @@ $.ajax({
 
   
 }
+
+
+// REALIZAR PEDIDO
+
+function realizarPedido(){
+
+  // let cant = 2;
+  // let idProd = "5fd63f6f1af7571a10ff2a3a";
+  // let idSuc = "601bf7d03b11a01a78163136";
+
+  $.ajax({
+    url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/pedidos`,
+    type: 'POST',
+    headers: {
+      'x-auth': localStorage.getItem("token"),
+    },
+    dataType: 'json',
+    data: JSON.stringify({
+        cantidad: 2,
+        idProducto: "5fd63f6f1af7571a10ff2a3a",
+        idSucursal: "601bf7d03b11a01a78163136",
+    }),
+  
+    
+    // beforeSend: function () {
+    //   $(`#progresCargaDetalle`).show()
+    // },
+    contentType: 'application/json',
+    success: function () {
+
+        
+        ons.notification.alert("pedido exitoso")
+    
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+
+}
+
+
 
 
