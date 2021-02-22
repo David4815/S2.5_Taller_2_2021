@@ -14,8 +14,10 @@
 //                09.A - FILTRAR POR ETIQUETA
 //              10 - APLICAR FILTROS POR NOMBRE Y ETIQUETA
 //              11 - NUEVO PEDIDO
+// 12 REALIZAR PEDIDO
+// 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
 // ---------------------------------------------------------------------------------------
-
+localStorage.setItem("paginaActual","");
 
 
 // 01 - CAPTURA DE EVENTOS-----------------------------------------------------------------------------
@@ -68,8 +70,24 @@ window.fn.open = function() {
 window.fn.load = function(page, data) {
   var content = document.getElementById('myNavigator');
   var menu = document.getElementById('menu');
-  content.pushPage(page, data)
+
+// prueba para precio total
+localStorage.removeItem("paginaActual");
+localStorage.setItem("paginaActual", page);
+
+// fin prueba
+
+
+  if(page!="catalogo.html"){
+
+    content.pushPage(page, data)
     .then(menu.close.bind(menu));
+  }else{
+    content.resetToPage(page, data)
+    .then(menu.close.bind(menu));
+  }
+  
+    
 };
 
 window.fn.pop = function() {
@@ -305,6 +323,7 @@ function detalleProducto(id) {
               <span class="list-item__subtitle">${response.data.puntaje}</span>
              
               ${botonComprar}
+              
 
        </div>
         
@@ -395,14 +414,16 @@ function filtrarPoretiqueta(){
     },
     dataType: 'json',
     success: function (dataTraida) {
+      debugger;
       let listaCatalogo = $('#listaCatalogo')
       
 
       dataTraida.data.forEach((elem) => {
+        debugger;
         let esta = false;
         // ACA NO ANDA------------------------------------------------------------
           for(let i=0; i<listaCatalogo.length; i++){
-              if(listaCatalogo.nomb===elem.nombre){
+              if(listaCatalogo.nombre.includes(elem.nombre)){
                 esta=true;
               }
           }
@@ -498,8 +519,11 @@ $.ajax({
             <p>
               <ons-input id="cantidadPedida" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
             </p>
+
+            
             <div id="precioTotal">
-            <p>Precio total ${precioTotal}</p>
+            <ons-button id="calcularPrecioTotal" onclick="${function calcular(){$("#pTotal").html(precioTotal*($("#cantidadPedida").val()))}})">Calcular Precio Total</ons-button>
+            <p id="pTotal">${precioTotal}</p>
             </div>
 
            
@@ -537,6 +561,13 @@ $.ajax({
     console.log('Fin!')
   },
 })
+
+
+function calcularPrecioTotal(precio, cantidad){
+      let precioTotal = precio * cantidad;
+      $("#pTotal").html(precioTotal);
+}
+
 
 
    // TRAER SUCURSALES
@@ -578,7 +609,7 @@ $.ajax({
 }
 
 
-// REALIZAR PEDIDO
+// 12 - REALIZAR PEDIDO--------------------------------------------------------------------------------------------------------------------------
 
 function realizarPedido(){
 
@@ -620,6 +651,115 @@ function realizarPedido(){
 
 }
 
+  // 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
+// function distance(lat1, lon1, lat2, lon2, unit) {
+// 	if ((lat1 == lat2) && (lon1 == lon2)) {
+// 		return 0;
+// 	}
+// 	else {
+// 		var radlat1 = Math.PI * lat1/180;
+// 		var radlat2 = Math.PI * lat2/180;
+// 		var theta = lon1-lon2;
+// 		var radtheta = Math.PI * theta/180;
+// 		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+// 		if (dist > 1) {
+// 			dist = 1;
+// 		}
+// 		dist = Math.acos(dist);
+// 		dist = dist * 180/Math.PI;
+// 		dist = dist * 60 * 1.1515;
+// 		if (unit=="K") { dist = dist * 1.609344 }
+// 		if (unit=="N") { dist = dist * 0.8684 }
+// 		return dist;
+// 	}
+// }
+
+
+// REGALITO 1 - FAVORITOS
+
+// function guardarFavorito(idFavorito) {
+//   if (localStorage.getItem('favoritos') === null) {
+//     localStorage.setItem('favoritos', '[]');
+//   }
+//   let userId = localStorage.getItem('userId');
+//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+//   let agregado = false;
+//   vecFavs.forEach(function (elem) {
+//     if (elem.idUsuario === userId) {
+//       if (!elem.favoritos.includes(idFavorito)) {
+//         elem.favoritos.push(idFavorito);
+//       }
+//       agregado = true;
+//     }
+//   });
+//   if (!agregado) {
+//     vecFavs.push({ idUsuario: userId, favoritos: [idFavorito] });
+//   }
+//   localStorage.setItem('favoritos', JSON.stringify(vecFavs));
+// }
+// function removerFavorito(idFavorito) {
+//   if (localStorage.getItem('favoritos') === null) {
+//     localStorage.setItem('favoritos', '[]');
+//   }
+//   let userId = localStorage.getItem('userId');
+//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+//   vecFavs.forEach(function (elem) {
+//     if (elem.idUsuario === userId) {
+//       if (elem.favoritos.includes(idFavorito)) {
+//         let pos = elem.favoritos.indexOf(idFavorito);
+//         elem.favoritos.splice(pos, 1);
+//       }
+//     }
+//   });
+//   localStorage.setItem('favoritos', JSON.stringify(vecFavs));
+// }
+// function obtenerFavoritos() {
+//   if (localStorage.getItem('favoritos') === null) {
+//     localStorage.setItem('favoritos', '[]');
+//   }
+//   let userId = localStorage.getItem('userId');
+//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+//   let favs = [];
+//   vecFavs.forEach(function (elem) {
+//     if (elem.idUsuario === userId) {
+//       favs = elem.favoritos;
+//     }
+//   });
+//   return favs;
+// }
+
+
+// REGALITO 2 FILTROS
+
+// function filtrar(productos, filtro) {
+//   let filtrado = [];
+//   productos.forEach(function (elem) {
+//     if (elem.nombre.includes(filtro) || elem.etiquetas.includes(filtro)) {
+//       filtrado.push(elem);
+//     }
+//   });
+//   return filtrado;
+// }
+
+
+$(document).ready(function() {
+  let page = localStorage.getItem("paginaActual");
+
+    if(page === "nuevoPedido.html"){
+
+      $("#cantidadPedida").on("keyup", function() {
+      var largo = $("#cantidadPedida").val().length
+      // Ocultar o mostrar de acuerdo al largo del texto
+      if (largo > 0) {
+          $("#pTotal").html("holis");
+      } else {
+          $("#actualizar").css("display", "none");
+      }
+  });
+}
+  
 
 
 
+  }
+  );
