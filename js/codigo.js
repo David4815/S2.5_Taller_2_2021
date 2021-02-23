@@ -53,6 +53,11 @@ document.addEventListener('init', function (event) {
 
         realizarPedido();
 
+
+        case `favoritos`:
+
+          mostrarFavoritos();
+          break;
   }
 
 
@@ -78,15 +83,23 @@ localStorage.setItem("paginaActual", page);
 // fin prueba
 
 
-  if(page!="catalogo.html"){
+  // if(page!="catalogo.html"){
 
-    content.pushPage(page, data)
-    .then(menu.close.bind(menu));
-  }else{
+  //   content.pushPage(page, data)
+  //   .then(menu.close.bind(menu));
+  // }else{
+  //   content.resetToPage(page, data)
+  //   .then(menu.close.bind(menu));
+  // }
+  
+  if(page==="catalogo.html" || page==="favoritos.html"){
     content.resetToPage(page, data)
     .then(menu.close.bind(menu));
+    
+  }else{
+    content.pushPage(page, data)
+    .then(menu.close.bind(menu));
   }
-  
     
 };
 
@@ -151,7 +164,8 @@ function login() {
 
         ons.notification.toast('Logueando...', { timeout: 1000 })
         fn.load('home.html')
-        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem("userId", response.data.email);
         // SE AGREGA DISPLAY NONE AL INICIO EN EL MENU Y AL LOGUEARSE SE PONE VISIBLE EL MENU
         $("#menu").css('display', '');
         
@@ -164,6 +178,16 @@ function login() {
       },
     })
   }
+}
+
+
+// GUARDAR CATALOGO
+
+function guardarCatalogo(){
+
+
+
+
 }
 
 
@@ -213,7 +237,7 @@ function registrar() {
     })
   }
 }
-
+let catalogoEntero;
 // 07 - LISTADO PRODUCTOS -------------------------------------------------------------------------------------------------------------------
 function mostrarListado() {
 
@@ -228,6 +252,7 @@ function mostrarListado() {
     },
     dataType: 'json',
     success: function (dataTraida) {
+      catalogoEntero = dataTraida;
       let listaCatalogo = $('#listaCatalogo');
       listaCatalogo.html("");
       // console.log('data traida', dataTraida.data[0])
@@ -255,12 +280,6 @@ function mostrarListado() {
 
           </ons-list-item>
           
-          <span class="list-item__subtitle">
-              <ons-button modifier="quiet">
-                  <ons-icon icon="md-face"></ons-icon>
-                    Agregar a favoritos
-              </ons-button>
-          </span>
             
             `)
       })
@@ -322,6 +341,13 @@ function detalleProducto(id) {
               <span class="list-item__subtitle">${response.data.descripcion}</span>
               <span class="list-item__subtitle">${response.data.puntaje}</span>
              
+             <span class="list-item__subtitle">   
+                  <ons-button modifier="quiet" onClick="guardarFavorito('${id}')">
+                    <ons-icon icon="md-face"></ons-icon>
+                      Agregar a Favoritos
+                  </ons-button> 
+            </span>
+
               ${botonComprar}
               
 
@@ -403,7 +429,7 @@ function filtrar() {
 // 09.B FILTRAR POR ETIQUETA---------------
 
 function filtrarPoretiqueta(){
-  let textoBuscado = $("#txtBusqueda").val();
+  let textoBuscado = $("#txtBusqueda").val().toLowerCase();
   let token = localStorage.getItem('token')
 
   $.ajax({
@@ -414,20 +440,21 @@ function filtrarPoretiqueta(){
     },
     dataType: 'json',
     success: function (dataTraida) {
-      debugger;
-      let listaCatalogo = $('#listaCatalogo')
       
+      let listaCatalogo = $('#listaCatalogo')
+       
 
       dataTraida.data.forEach((elem) => {
-        debugger;
+
+    
+        let etiquetasEnMinuscula= elem.etiquetas.map(function(x){ return x.toLowerCase(); })
         let esta = false;
-        // ACA NO ANDA------------------------------------------------------------
-          for(let i=0; i<listaCatalogo.length; i++){
-              if(listaCatalogo.nombre.includes(elem.nombre)){
+        
+          
+              if(elem.nombre.toLowerCase().includes(textoBuscado)){
                 esta=true;
               }
-          }
-        if(elem.etiquetas.includes(textoBuscado) && !esta){
+        if(etiquetasEnMinuscula.includes(textoBuscado) && !esta){
         esta=false; 
         listaCatalogo.append(` 
           <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
@@ -677,56 +704,60 @@ function realizarPedido(){
 
 // REGALITO 1 - FAVORITOS
 
-// function guardarFavorito(idFavorito) {
-//   if (localStorage.getItem('favoritos') === null) {
-//     localStorage.setItem('favoritos', '[]');
-//   }
-//   let userId = localStorage.getItem('userId');
-//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
-//   let agregado = false;
-//   vecFavs.forEach(function (elem) {
-//     if (elem.idUsuario === userId) {
-//       if (!elem.favoritos.includes(idFavorito)) {
-//         elem.favoritos.push(idFavorito);
-//       }
-//       agregado = true;
-//     }
-//   });
-//   if (!agregado) {
-//     vecFavs.push({ idUsuario: userId, favoritos: [idFavorito] });
-//   }
-//   localStorage.setItem('favoritos', JSON.stringify(vecFavs));
-// }
-// function removerFavorito(idFavorito) {
-//   if (localStorage.getItem('favoritos') === null) {
-//     localStorage.setItem('favoritos', '[]');
-//   }
-//   let userId = localStorage.getItem('userId');
-//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
-//   vecFavs.forEach(function (elem) {
-//     if (elem.idUsuario === userId) {
-//       if (elem.favoritos.includes(idFavorito)) {
-//         let pos = elem.favoritos.indexOf(idFavorito);
-//         elem.favoritos.splice(pos, 1);
-//       }
-//     }
-//   });
-//   localStorage.setItem('favoritos', JSON.stringify(vecFavs));
-// }
-// function obtenerFavoritos() {
-//   if (localStorage.getItem('favoritos') === null) {
-//     localStorage.setItem('favoritos', '[]');
-//   }
-//   let userId = localStorage.getItem('userId');
-//   let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
-//   let favs = [];
-//   vecFavs.forEach(function (elem) {
-//     if (elem.idUsuario === userId) {
-//       favs = elem.favoritos;
-//     }
-//   });
-//   return favs;
-// }
+function guardarFavorito(idFavorito) {
+  if (localStorage.getItem('favoritos') === null) {
+    localStorage.setItem('favoritos', '[]');
+  }
+  let userId = localStorage.getItem('userId');
+  let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+  let agregado = false;
+  vecFavs.forEach(function (elem) {
+    if (elem.idUsuario === userId) {
+      if (!elem.favoritos.includes(idFavorito)) {
+        elem.favoritos.push(idFavorito);
+      }
+      agregado = true;
+    }
+  });
+  if (!agregado) {
+    vecFavs.push({ idUsuario: userId, favoritos: [idFavorito] });
+  }
+  localStorage.setItem('favoritos', JSON.stringify(vecFavs));
+}
+
+
+function removerFavorito(idFavorito) {
+  if (localStorage.getItem('favoritos') === null) {
+    localStorage.setItem('favoritos', '[]');
+  }
+  let userId = localStorage.getItem('userId');
+  let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+  vecFavs.forEach(function (elem) {
+    if (elem.idUsuario === userId) {
+      if (elem.favoritos.includes(idFavorito)) {
+        let pos = elem.favoritos.indexOf(idFavorito);
+        elem.favoritos.splice(pos, 1);
+      }
+    }
+  });
+  localStorage.setItem('favoritos', JSON.stringify(vecFavs));
+}
+
+
+function obtenerFavoritos() {
+  if (localStorage.getItem('favoritos') === null) {
+    localStorage.setItem('favoritos', '[]');
+  }
+  let userId = localStorage.getItem('userId');
+  let vecFavs = JSON.parse(localStorage.getItem('favoritos'));
+  let favs = [];
+  vecFavs.forEach(function (elem) {
+    if (elem.idUsuario === userId) {
+      favs = elem.favoritos;
+    }
+  });
+  return favs;
+}
 
 
 // REGALITO 2 FILTROS
@@ -742,24 +773,137 @@ function realizarPedido(){
 // }
 
 
-$(document).ready(function() {
-  let page = localStorage.getItem("paginaActual");
+// $(document).ready(function() {
+//   let page = localStorage.getItem("paginaActual");
 
-    if(page === "nuevoPedido.html"){
+//     if(page === "nuevoPedido.html"){
 
-      $("#cantidadPedida").on("keyup", function() {
-      var largo = $("#cantidadPedida").val().length
-      // Ocultar o mostrar de acuerdo al largo del texto
-      if (largo > 0) {
-          $("#pTotal").html("holis");
-      } else {
-          $("#actualizar").css("display", "none");
-      }
-  });
-}
+//       $("#cantidadPedida").on("keyup", function() {
+//       var largo = $("#cantidadPedida").val().length
+//       // Ocultar o mostrar de acuerdo al largo del texto
+//       if (largo > 0) {
+//           $("#pTotal").html("holis");
+//       } else {
+//           $("#actualizar").css("display", "none");
+//       }
+//   });
+// }
   
 
 
 
+//   }
+//   );
+
+
+// $(document).ready(function() {
+//   $("#cantidadPedida").on("keyup", function() {
+//       var cantidad = $("#cantidadPedida").val()
+//       // Ocultar o mostrar de acuerdo al largo del texto
+//       if (cantidad > 0) {
+//           $("#pTotal").html("hola");
+//       } else {
+//           $("#pTotal").html("hola");
+//       }
+//   });
+// });
+
+
+
+// function mostrarFavoritos(){
+
+// let favoritos = obtenerFavoritos();
+// let cat = JSON.parse(catalogoEntero);
+// cat.forEach(function (elem) {
+//   favoritos.forEach(function(fav){
+
+//     if (elem._id === fav) {
+//       $("#listaFavoritos").append(`
+//       <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
+        
+//       <div class="left">
+//           <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
+//       </div>
+
+//        <div class="center">
+//           <span class="list-item__title" id="nomb">${elem.nombre}</span>
+//           <span class="list-item__subtitle">${elem.precio}UYU</span>
+//           <span class="list-item__subtitle">${elem.codigo}</span>
+//           <span class="list-item__subtitle">${elem.etiquetas}</span>
+//         </div>
+
+//         <div class="right">
+//           <span class="list-item__title">${elem.estado}</span>
+//         </div>
+
+//       </ons-list-item>
+      
+//       <span class="list-item__subtitle">
+//           <ons-button modifier="quiet">
+//               <ons-icon icon="md-face"></ons-icon>
+//                 Agregar a favoritos
+//           </ons-button>
+//       </span>
+      
+//       `)
+//     }
+
+
+
+//   })
+
+// });
+
+// }
+
+
+function mostrarFavoritos(){
+
+  let favoritos = obtenerFavoritos();
+  
+  $("#listaFavoritos").empty();
+
+  for(let i =0; i < catalogoEntero.data.length; i++) {
+    favoritos.forEach(function(fav){
+  
+      if (catalogoEntero.data[i]._id === fav) {
+        
+        $("#listaFavoritos").append(`
+        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${catalogoEntero.data[i]._id}'}})">
+          
+        <div class="left">
+            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${catalogoEntero.data[i].urlImagen}.jpg">
+        </div>
+  
+         <div class="center">
+            <span class="list-item__title" id="nomb">${catalogoEntero.data[i].nombre}</span>
+            <span class="list-item__subtitle">${catalogoEntero.data[i].precio}UYU</span>
+            <span class="list-item__subtitle">${catalogoEntero.data[i].codigo}</span>
+            <span class="list-item__subtitle">${catalogoEntero.data[i].etiquetas}</span>
+          </div>
+  
+          <div class="right">
+            <span class="list-item__title">${catalogoEntero.data[i].estado}</span>
+          </div>
+  
+        </ons-list-item>
+        
+        <span class="list-item__subtitle">   
+              <ons-button modifier="quiet" onClick="removerFavorito('${catalogoEntero.data[i]._id}'),fn.load('favoritos.html')">
+                   <ons-icon icon="md-face"></ons-icon>
+                    Eliminar Favoritos
+              </ons-button> 
+         </span>
+        
+        `)
+      }
+  
+  
+  
+    })
+  
+  };
+  
   }
-  );
+
+
