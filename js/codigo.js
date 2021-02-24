@@ -33,25 +33,25 @@ document.addEventListener('init', function (event) {
         detalleProducto(id);       
         break;
 
-    case `mapa`:
-
-        setTimeout(() => {}, 1000);
-        var mymap2 = L.map('mapid').setView([-34.9176711, -56.152399], 15);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(mymap2);
-       break;
-
     case `nuevoPedido`:
 
         let idproducto = page.data.id;
         mostrarNuevoPedido(idproducto);
-        break;
 
+        setTimeout(() => {
+
+          var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(mymap);
+        
+        }, 1000);
+      
+        break;
     case `pedidos`:
 
-        realizarPedido();
+      listarPedidos();
 
 
         case `favoritos`:
@@ -59,6 +59,12 @@ document.addEventListener('init', function (event) {
           mostrarFavoritos();
           break;
   }
+
+  // if (event.target.id == "nuevoPedido") {
+  //   document.getElementById("my-switch").addEventListener('change', function(e) {
+  //     console.log('click', e);
+  //   });
+  // }
 
 
 })
@@ -533,6 +539,8 @@ $.ajax({
   // }
     let precioTotal = response.data.precio;
     
+    
+    
    
     $('#ContenedorNuevoPedido').html(`
     
@@ -544,7 +552,7 @@ $.ajax({
             <span class="list-item__title">${response.data.nombre}</span>
             <span class="list-item__subtitle">${response.data.precio}UYU</span>
             <p>
-              <ons-input id="cantidadPedida" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
+              <ons-input id="cantidadPedida" onChange="alert('hola')" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
             </p>
 
             
@@ -556,13 +564,14 @@ $.ajax({
            
             <h3>Seleccione sucursal de retiro:</h3>
 
- 
+
 
               <div id="lista"> </div>
             
-              
+              <div id="mapidPedido"></div>
+
               <span class="list-item__subtitle">   
-              <ons-button modifier="quiet" onClick="fn.load('pedidos.html', {data: { id: '${id}'}})">
+              <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('pedidos.html')">
                               
                   <ons-icon icon="md-face"></ons-icon>
                       Comprar
@@ -612,12 +621,12 @@ function calcularPrecioTotal(precio, cantidad){
       
 
      $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)"> 
-     <select class="select-input" id="select">
+     <select class="select-input" id="selectSucursal">
   
   </select>        
      </ons-select>`) 
       for(let i=0; i<suc.data.length; i++){
-        $('#select').append(`<option value="hola">${suc.data[i].nombre}</option>`) 
+        $('#selectSucursal').append(`<option value="${suc.data[i]._id}">${suc.data[i].nombre}</option>`) 
     }
 
       console.log("sucursales", suc);
@@ -638,9 +647,10 @@ function calcularPrecioTotal(precio, cantidad){
 
 // 12 - REALIZAR PEDIDO--------------------------------------------------------------------------------------------------------------------------
 
-function realizarPedido(){
+function realizarPedido(idProducto){
 
-  // let cant = 2;
+  let cant = $("#cantidadPedida").val();
+  let idSuc = $("#selectSucursal").val();
   // let idProd = "5fd63f6f1af7571a10ff2a3a";
   // let idSuc = "601bf7d03b11a01a78163136";
 
@@ -652,9 +662,9 @@ function realizarPedido(){
     },
     dataType: 'json',
     data: JSON.stringify({
-        cantidad: 2,
-        idProducto: "5fd63f6f1af7571a10ff2a3a",
-        idSucursal: "601bf7d03b11a01a78163136",
+        cantidad: cant,
+        idProducto: idProducto,
+        idSucursal: idSuc,
     }),
   
     
@@ -702,7 +712,7 @@ function realizarPedido(){
 // }
 
 
-// REGALITO 1 - FAVORITOS
+// FAVORITOS--------------------------------------------------------------
 
 function guardarFavorito(idFavorito) {
   if (localStorage.getItem('favoritos') === null) {
@@ -907,3 +917,132 @@ function mostrarFavoritos(){
   }
 
 
+  // document.addEventListener("init", function(event) {
+  //   if (event.target.id == "my-page") {
+  //     document.getElementById("my-switch").addEventListener('change', function(e) {
+  //       console.log('click', e);
+  //     });
+  //   }
+  // }, false);
+
+
+  function listarPedidos(){
+
+ // TOKEN
+ let token = localStorage.getItem('token')
+  
+ $.ajax({
+   url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/pedidos',
+   type: 'GET',
+   headers: {
+     'x-auth': token,
+   },
+   dataType: 'json',
+   success: function (dataTraida) {
+    //  catalogoEntero = dataTraida;
+   
+     // console.log('data traida', dataTraida.data[0])
+     // console.log('data traida', dataTraida.data[0].urlImagen)      
+    //  fn.load('detalle.html', {data: { id: '${elem._id}'}})
+     dataTraida.data.forEach((elem) => {
+       
+      $('#listaPedidos').append(` 
+         <ons-list-item onClick="notify()">
+       
+         <div class="left">
+             <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.producto.urlImagen}.jpg">
+         </div>
+
+          <div class="center">
+             <span class="list-item__title" id="nomb">${elem.producto.nombre}</span>
+             <span class="list-item__subtitle">${elem.total}UYU</span>
+             <span class="list-item__subtitle">${elem.producto.codigo}</span>
+             <span class="list-item__subtitle">${elem.producto.etiquetas}</span>
+             <span class="list-item__subtitle">${elem.sucursal.nombre}</span>
+             <span class="list-item__subtitle">${elem.estado}</span>
+           </div>
+
+           <div class="right">
+             <span class="list-item__title">${elem.estado}</span>
+           </div>
+
+         </ons-list-item>
+         
+           
+           `)
+     })
+    
+     $('#listaPedidos').fadeIn()
+   },
+   error: function (e1, e2, e3) {
+     console.log('Error...', e1, e2, e3)
+   },
+   complete: function () {
+     console.log('Fin!')
+   },
+ })
+}
+
+
+
+// alert para agregar opinion de producto---------------------------------------------------------------
+
+function pedirOpinion(id){
+
+  // TOKEN
+ let token = localStorage.getItem('token')
+  
+ $.ajax({
+   url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/${id}`,
+   type: 'PUT',
+   headers: {
+     'x-auth': token,
+   },
+   dataType: 'json',
+   data: JSON.stringify({
+    comentario: unComentario,
+    
+  }),
+
+   success: function () {
+   
+     ons.notification.alert("fin Comentario");
+    
+     
+   },
+   error: function (e1, e2, e3) {
+     console.log('Error...', e1, e2, e3)
+   },
+   complete: function () {
+     console.log('Fin!')
+   },
+ })
+
+
+}
+
+
+
+var createAlertDialog = function() {
+  var dialog = document.getElementById('my-alert-dialog');
+
+  if (dialog) {
+    dialog.show();
+  } else {
+    ons.createElement('alert-dialog.html', { append: true })
+      .then(function(dialog) {
+        dialog.show();
+      });
+  }
+};
+
+var hideAlertDialog = function() {
+  document
+    .getElementById('my-alert-dialog')
+    .hide();
+};
+
+var notify = function() {
+  ons.notification.alert('<ons-input id="nombre" modifier="underbar" placeholder="nombre" float></ons-input>');
+};
+  

@@ -67,11 +67,7 @@
           
                     <ons-list-item onclick="fn.load('pedidos.html')" tappable>
                       Pedidos
-                    </ons-list-item>
-
-                    <ons-list-item onclick="fn.load('mapa.html')" tappable>
-                      Mapa
-                    </ons-list-item>
+                    </ons-list-item>        
 
                 </ons-list>
             </ons-page>
@@ -334,6 +330,7 @@
 
     </div>
 
+
   </ons-page>
 </template>
 
@@ -368,37 +365,7 @@
 </template>
 
 
-<!-- 11 - Mapa ---------------------------------------------------------------------------------------------------------------------------->
 
-<template id="mapa.html">
-  <ons-page id="mapa"> 
-    <ons-toolbar>
-      <div class="left">
-        <ons-toolbar-button onclick="fn.open()">
-          <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button>
-        <ons-back-button>atras</ons-back-button>
-      </div>
-      <div class="center">
-        Mapa
-      </div>
-      <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-        <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
-        <!-- ir atras -->
-        
-      </div>
-    </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
-
-    <div id="mapid"></div>
-
-  </ons-page>
-</template>
 
 </body>
 
