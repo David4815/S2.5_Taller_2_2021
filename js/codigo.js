@@ -27,6 +27,8 @@ document.addEventListener('init', function (event) {
 
   switch (page.id) {
 
+    
+
     case `detalle`:
 
         let id = page.data.id;
@@ -174,6 +176,7 @@ function login() {
         localStorage.setItem("userId", response.data.email);
         // SE AGREGA DISPLAY NONE AL INICIO EN EL MENU Y AL LOGUEARSE SE PONE VISIBLE EL MENU
         $("#menu").css('display', '');
+        mostrarListado();
         
       },
       error: function (e1, e2, e3) {
@@ -278,6 +281,7 @@ function mostrarListado() {
               <span class="list-item__subtitle">${elem.precio}UYU</span>
               <span class="list-item__subtitle">${elem.codigo}</span>
               <span class="list-item__subtitle">${elem.etiquetas}</span>
+              <span class="list-item__subtitle">${elem.estado}</span>
             </div>
 
             <div class="right">
@@ -399,7 +403,7 @@ function filtrar() {
       console.log('data detalle', response)
       response.data.forEach((elem) => {
         listado.append(` 
-        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem.id}'}})">
+        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
          
         
         
@@ -468,7 +472,7 @@ function filtrarPoretiqueta(){
           
           
           <div class="left">
-              <img class="list-item__thumbnail" src="http://http2.mlstatic.com/D_880363-MLU44848941421_022021-I.jpg">
+              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
             </div>
 
             
@@ -557,8 +561,8 @@ $.ajax({
 
             
             <div id="precioTotal">
-            <ons-button id="calcularPrecioTotal" onclick="${function calcular(){$("#pTotal").html(precioTotal*($("#cantidadPedida").val()))}})">Calcular Precio Total</ons-button>
-            <p id="pTotal">${precioTotal}</p>
+            
+            <p id="pTotal">Precio total: ${precioTotal} UYU</p>
             </div>
 
            
@@ -584,8 +588,8 @@ $.ajax({
     `
     
     )
-    
-    
+    // boton para calcular precio total
+    // <ons-button id="calcularPrecioTotal" onclick="${function calcular(){$("#pTotal").html(precioTotal*($("#cantidadPedida").val()))}})">Calcular Precio Total</ons-button>
     
     // $(`#progresCargaDetalle`).hide()
     $('#progressCargaDetalle').hide();
@@ -599,10 +603,7 @@ $.ajax({
 })
 
 
-function calcularPrecioTotal(precio, cantidad){
-      let precioTotal = precio * cantidad;
-      $("#pTotal").html(precioTotal);
-}
+
 
 
 
@@ -687,6 +688,15 @@ function realizarPedido(idProducto){
   })
 
 }
+
+
+
+
+
+
+
+
+
 
   // 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
 // function distance(lat1, lon1, lat2, lon2, unit) {
@@ -820,51 +830,7 @@ function obtenerFavoritos() {
 
 
 
-// function mostrarFavoritos(){
 
-// let favoritos = obtenerFavoritos();
-// let cat = JSON.parse(catalogoEntero);
-// cat.forEach(function (elem) {
-//   favoritos.forEach(function(fav){
-
-//     if (elem._id === fav) {
-//       $("#listaFavoritos").append(`
-//       <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
-        
-//       <div class="left">
-//           <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
-//       </div>
-
-//        <div class="center">
-//           <span class="list-item__title" id="nomb">${elem.nombre}</span>
-//           <span class="list-item__subtitle">${elem.precio}UYU</span>
-//           <span class="list-item__subtitle">${elem.codigo}</span>
-//           <span class="list-item__subtitle">${elem.etiquetas}</span>
-//         </div>
-
-//         <div class="right">
-//           <span class="list-item__title">${elem.estado}</span>
-//         </div>
-
-//       </ons-list-item>
-      
-//       <span class="list-item__subtitle">
-//           <ons-button modifier="quiet">
-//               <ons-icon icon="md-face"></ons-icon>
-//                 Agregar a favoritos
-//           </ons-button>
-//       </span>
-      
-//       `)
-//     }
-
-
-
-//   })
-
-// });
-
-// }
 
 
 function mostrarFavoritos(){

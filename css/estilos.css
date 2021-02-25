@@ -1,29 +1,42 @@
 #mapid,#mapidPedido { height: 180px; }
 
+.titulo{text-align:center}
+
+
+
 
 /* 
+
+CAMBIOS
+
+clase titulo a titulos para que queden centrados
+
+guion filtrar por nombre en id por eso no se movia a detalle despues de filtrar
+
+mostrarListado() se cambia de boton login a funcion login por que se ejecutaba antes que el login y daba error
+
+cambio boton salir      <!-- <ons-button id="btnMostrarListado" onclick="logout()">Salir</ons-button> -->
+                        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
+
+
+boton para poner funcion de escanear qr
+
+
+PARA REVISAR
+
+sucursal de retiro aparece aveces si y a veces no
+en stock en los productos en el celular queda afuera al estar a la derecha hay que ponerlo abajo
+poner toast agregado a favorios
+        toast eliminado de favoritos
+        compra exitosa
+
 
 
 PREGUNTAS
 
-
-
-NO PUEDO ABRIR 2 VECES EL MAPA TENGO QUE DESINICIALIZARLO 
-NO PODEMOS PONER EL MAPA EN LA PAGINA NUEVO PEDIDO
-
-
-
-
-EL FILTRO REPITE DATOS SI LO BUSCADO ESTA EN NOMBRE Y ETIQUETA
-posible solucion: si contiene la palabra buscada en la descripcion, guardar id y nombre y codigo para buscarlo por codigo al hacer la busqueda por nombre
-
-
-
-
-
-
-
-
+DISTANCIA ENTRE SUCURSALES
+CODIGO QR
+CALCULO EN TIEMPO REAL DE COSTO TOTAL
 
 FALTA VERIFICACION DE MANTENER REGISTRO, SI NO HAY TOKEN IR A LOGIN SI NO IR A HOME
 

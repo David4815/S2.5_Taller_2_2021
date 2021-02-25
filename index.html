@@ -95,7 +95,7 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div> -->
-      <div class="center">
+      <div class="center titulo">
         Login
       </div>
     </ons-toolbar>
@@ -109,7 +109,8 @@
         </ons-input>
       </p>
       <p style="margin-top: 30px;">
-        <ons-button onclick="login(),mostrarListado()">Sign in</ons-button>
+        <!-- SE SACO MOSTRAR LISTADO DE ACA Y SE PUSO EN FUNCION LOGIN ACA SE EJECUTABA ANTES QUE LOGIN -->
+        <ons-button onclick="login()">Sign in</ons-button>
       </p>
       
       <ons-button modifier='quiet' onclick="fn.load('registro.html')">No tienes usuario? Registrate!</ons-button>
@@ -130,7 +131,7 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div> -->
-      <div class="center">
+      <div class="center titulo">
         Registro
       </div>
     </ons-toolbar>
@@ -154,7 +155,6 @@
       <p style="margin-top: 30px;">
         <ons-button onclick="registrar()">Registrarse</ons-button>
       </p>
-      <!-- <ons-button modifier='quiet' onclick="irLogin()">Ya tienes usuario? Logueate!</ons-button> -->
       <ons-button modifier='quiet' onclick="fn.load('login.html')">Ya tienes usuario? Logueate!</ons-button>
     </div>
 
@@ -174,22 +174,26 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Home
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="logout()">Salir</ons-button>
-
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
     <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
       Swipe right to open the menu!
     </p>
-   
-
+    <div class="center titulo">
+      Activar Modo nocturno
+    </div>
+    <div class="center titulo">
+      <ons-switch onclick="ons.notification.alert(
+        { message: 'Se realizan tareas de respaldo entre la 13:30 y 13:00. Durante este tiempo el MODO NOCTURNO está fuera de servicio. Disculpen las molestias.', title:'Mantenimiento' }
+        )"></ons-switch>
+    </div>
+    
   </ons-page>
 
 </template>
@@ -206,22 +210,20 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Catalogo
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
-        <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
     <div style="text-align: center; margin-top: 30px;">
       <p>
         <ons-input id="txtBusqueda" modifier="underbar" placeholder="texto buscado" float></ons-input>
+        <ons-button onclick="buscar2()">Filtrar</ons-button>
       </p>
       <p style="margin-top: 30px;">
-        <ons-button onclick="buscar2()">Filtrar</ons-button>
+        <ons-button id="qr" modifier="quiet" onclick="algunaFuncion()">Scan QR</ons-button>
       </p>
     </div>
 
@@ -251,14 +253,12 @@
         </ons-toolbar-button> -->
         <ons-back-button>atras</ons-back-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Detalle
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
 
@@ -280,19 +280,14 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Favoritos
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
 
     <div id="listaFavoritos">    
     </div>
@@ -306,26 +301,18 @@
 <template id="nuevoPedido.html">
   <ons-page id="nuevoPedido">
     <ons-toolbar>
-      <div class="left">
-        <!-- <ons-toolbar-button onclick="fn.open()">
-          <ons-icon icon="md-menu"></ons-icon>
-        </ons-toolbar-button> -->
+      <div class="left">      
         <ons-back-button>atras</ons-back-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Nuevo Pedidos
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
-
+    
     <div id="ContenedorNuevoPedido">
 
     </div>
@@ -344,20 +331,15 @@
           <ons-icon icon="md-menu"></ons-icon>
         </ons-toolbar-button>
       </div>
-      <div class="center">
+      <div class="center titulo">
         Pedidos
       </div>
       <div class="right">
-        <!-- boton para ir a LOGIN -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Entrar</ons-button>
         <!-- boton para Salir -->
-        <ons-button id="btnMostrarListado" onclick="fn.load('login.html')">Salir</ons-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
       </div>
     </ons-toolbar>
-    <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
-      Swipe right to open the menu!
-    </p>
-
+    
     <div id="listaPedidos">
     </div>
 
