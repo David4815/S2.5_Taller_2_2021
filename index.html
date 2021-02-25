@@ -223,7 +223,7 @@
         <ons-button onclick="buscar2()">Filtrar</ons-button>
       </p>
       <p style="margin-top: 30px;">
-        <ons-button id="qr" modifier="quiet" onclick="algunaFuncion()">Scan QR</ons-button>
+        <ons-button id="qr" modifier="quiet" onclick="filtrarPorCodigo('PRCODE011')">Scan QR</ons-button>
       </p>
     </div>
 
@@ -262,7 +262,7 @@
       </div>
     </ons-toolbar>
 
-    <h4>Detalle del producto:</h4>
+    <!-- <h4>Detalle del producto:</h4> -->
     <ons-progress-circular indeterminate id="progressCargaDetalle"></ons-progress-circular>
     <div id="contenedorDetalle"></div>
 

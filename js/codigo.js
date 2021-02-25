@@ -504,6 +504,57 @@ function filtrarPoretiqueta(){
   })
 }
 
+// 09.A - FILTRO CODIGO PARA QR-------------
+function filtrarPorCodigo(unCodigo) {
+  
+  $.ajax({
+    url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/productos',
+    type: 'GET',
+    data: {
+      codigo: unCodigo
+    },
+    headers: {
+      'x-auth': localStorage.getItem("token"),
+    },
+    dataType: 'json',
+    success: function (response) {
+      let listado = $('#listaCatalogo')
+      console.log('data detalle', response)
+      
+        listado.append(` 
+        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${response.data._id}'}})">
+         
+        
+        
+        <div class="left">
+            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
+          </div>
+
+          
+
+          <div class="center">
+            <span class="list-item__title">${response.data.nombre}</span>
+            <span class="list-item__subtitle">${response.data.precio}UYU</span>
+            <span class="list-item__subtitle">${response.data.codigo}</span>
+            <span class="list-item__subtitle">${response.data.etiquetas}</span>
+          </div>
+          <div class="right">
+            <span class="list-item__title">${response.data.estado}</span>
+          </div>
+        </ons-list-item>`)
+      
+      listado.fadeIn()
+      $('#btnVerMas').fadeIn()
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+}
+
 // 10 - APLICAR FILTROS POR NOMBRE Y ETIQUETA -------------------------------------------------------------------
 
 function buscar2() {
@@ -1009,6 +1060,39 @@ var hideAlertDialog = function() {
 };
 
 var notify = function() {
-  ons.notification.alert('<ons-input id="nombre" modifier="underbar" placeholder="nombre" float></ons-input>');
+  ons.notification.alert({ message:'<ons-input id="nombre" modifier="underbar" placeholder="comente aqui" float></ons-input>' , title: 'Ingrese un comentario.'});
 };
   
+
+
+// ESCANEAR QR------------------------------------------------------------------------------------------------------------
+
+
+//función que se dispara al ingresar a la página del scanner
+function escanear() {
+  //si hay scanner
+  if (window.QRScanner) {
+    //esto lo uso para mostrar la cam en la app...
+    //por defecto la vista previa queda por encima del body y el html.
+    //pero por un tema de compatibilidad con onsen queda por debajo de la page.
+    //Mirar el css y ver cómo hay que hacer que esta page sea transparente para que se vea la camara
+    window.QRScanner.show(function (status) {
+      //función de scan y su callback
+      window.QRScanner.scan(scanCallback);
+    });
+  }
+}
+
+function scanCallback(err, text) {
+  if (err) {
+    // an error occurred, or the scan was canceled (error code `6`)
+    ons.notification.alert(JSON.stringify(err));
+  } else {
+    //si no hay error escondo el callback y vuelvo a la pantalla anterior
+    //pasando el string que se escaneó con la url del producto
+    QRScanner.hide();
+    filtrarPorCodigo("PRCODE011")
+    // fn.load('detalle.html', {data: { id: '${elem._id}'}})
+    // myNavigator.popPage({ data: { scanText: text } });
+  }
+}
