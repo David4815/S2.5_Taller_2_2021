@@ -39,10 +39,22 @@ document.addEventListener('init', function (event) {
 
         let idproducto = page.data.id;
         mostrarNuevoPedido(idproducto);
+        traerSucursales();
 
         setTimeout(() => {
 
           var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
+          
+          L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
+          L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
+          L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
+          L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
+          L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
+          
+          
+          // Mi ubicacion
+          L.marker([-34.9176711, -56.152399]).addTo(mymap).bindPopup('Yo').openPopup();
+         
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -62,6 +74,8 @@ document.addEventListener('init', function (event) {
           break;
   }
 
+
+  
   // if (event.target.id == "nuevoPedido") {
   //   document.getElementById("my-switch").addEventListener('change', function(e) {
   //     console.log('click', e);
@@ -100,7 +114,7 @@ localStorage.setItem("paginaActual", page);
   //   .then(menu.close.bind(menu));
   // }
   
-  if(page==="catalogo.html" || page==="favoritos.html"){
+  if(page==="catalogo.html" || page==="favoritos.html" || page==="pedidos.html"){
     content.resetToPage(page, data)
     .then(menu.close.bind(menu));
     
@@ -518,33 +532,34 @@ function filtrarPorCodigo(unCodigo) {
     },
     dataType: 'json',
     success: function (response) {
-      let listado = $('#listaCatalogo')
+      let listado = $('#listaCatalogo');
+      listado.empty().hide();
       console.log('data detalle', response)
-      
+      response.data.forEach((elem) => {
         listado.append(` 
-        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${response.data._id}'}})">
+        <ons-list-item onClick="fn.load('detalle.html', {data: { id: '${elem._id}'}})">
          
         
         
         <div class="left">
-            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
+            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
           </div>
 
           
 
           <div class="center">
-            <span class="list-item__title">${response.data.nombre}</span>
-            <span class="list-item__subtitle">${response.data.precio}UYU</span>
-            <span class="list-item__subtitle">${response.data.codigo}</span>
-            <span class="list-item__subtitle">${response.data.etiquetas}</span>
+            <span class="list-item__title">${elem.nombre}</span>
+            <span class="list-item__subtitle">${elem.precio}UYU</span>
+            <span class="list-item__subtitle">${elem.codigo}</span>
+            <span class="list-item__subtitle">${elem.etiquetas}</span>
           </div>
           <div class="right">
-            <span class="list-item__title">${response.data.estado}</span>
+            <span class="list-item__title">${elem.estado}</span>
           </div>
         </ons-list-item>`)
-      
+      })
       listado.fadeIn()
-      $('#btnVerMas').fadeIn()
+      
     },
     error: function (e1, e2, e3) {
       console.log('Error...', e1, e2, e3)
@@ -626,7 +641,7 @@ $.ajax({
               <div id="mapidPedido"></div>
 
               <span class="list-item__subtitle">   
-              <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('pedidos.html')">
+              <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
                               
                   <ons-icon icon="md-face"></ons-icon>
                       Comprar
@@ -653,13 +668,12 @@ $.ajax({
   },
 })
 
-
-
-
-
-
-   // TRAER SUCURSALES
-   $.ajax({
+   
+   
+}
+// TRAER SUCURSALES
+function traerSucursales(){
+  $.ajax({
     url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/sucursales`,
     type: 'GET',
     headers: {
@@ -692,11 +706,7 @@ $.ajax({
       console.log('Fin!')
     },
   })
-
-  
 }
-
-
 // 12 - REALIZAR PEDIDO--------------------------------------------------------------------------------------------------------------------------
 
 function realizarPedido(idProducto){
@@ -944,7 +954,7 @@ function mostrarFavoritos(){
 
 
   function listarPedidos(){
-
+    $('#listaPedidos').empty();
  // TOKEN
  let token = localStorage.getItem('token')
   
@@ -964,7 +974,7 @@ function mostrarFavoritos(){
      dataTraida.data.forEach((elem) => {
        
       $('#listaPedidos').append(` 
-         <ons-list-item onClick="notify()">
+         <ons-list-item onClick="evaluarEstadoPedido('${elem._id}','${elem.estado}')">
        
          <div class="left">
              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.producto.urlImagen}.jpg">
@@ -1001,30 +1011,38 @@ function mostrarFavoritos(){
 }
 
 
-
+function evaluarEstadoPedido(idProducto, estadoProducto){
+if(estadoProducto === 'pendiente'){
+  showTemplateDialog(idProducto);
+}else{
+  ons.notification.alert('Pedido ya entregado');
+}
+}
 // alert para agregar opinion de producto---------------------------------------------------------------
 
-function pedirOpinion(id){
+function pedirOpinion(){
 
   // TOKEN
  let token = localStorage.getItem('token')
-  
+ let unComentario = $("#comentarioPedido").val();
+ let idPedido = localStorage.getItem('idPedido'); 
  $.ajax({
-   url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/${id}`,
+   url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/pedidos/${idPedido}`,
    type: 'PUT',
    headers: {
      'x-auth': token,
+     
+
    },
    dataType: 'json',
    data: JSON.stringify({
     comentario: unComentario,
     
   }),
-
+  contentType: 'application/json',
    success: function () {
-   
-     ons.notification.alert("fin Comentario");
     
+     listarPedidos();
      
    },
    error: function (e1, e2, e3) {
@@ -1068,6 +1086,12 @@ var notify = function() {
 // ESCANEAR QR------------------------------------------------------------------------------------------------------------
 
 
+function onDeviceReady() {
+  //pido permisos para usar la camara
+  QRScanner.prepare(prepareCallback);
+}
+
+
 //función que se dispara al ingresar a la página del scanner
 function escanear() {
   //si hay scanner
@@ -1091,8 +1115,92 @@ function scanCallback(err, text) {
     //si no hay error escondo el callback y vuelvo a la pantalla anterior
     //pasando el string que se escaneó con la url del producto
     QRScanner.hide();
-    filtrarPorCodigo("PRCODE011")
+    filtrarPorCodigo(`${text}`)
     // fn.load('detalle.html', {data: { id: '${elem._id}'}})
     // myNavigator.popPage({ data: { scanText: text } });
   }
+}
+
+// FALTA DE INTERNET-------------------------------------------------------------------------------------------
+
+//callbacks para el device ready de cordova y el el de onsen-------------??????????????????????????????????????????????????????????????????????????????????------
+// document.addEventListener('deviceready', onDeviceReady, false);
+// ons.ready(init);
+
+//bind para cuando el dispositivo se queda sin internet
+document.addEventListener(
+  'offline',
+  function () {
+    console.log('offline callback');
+    myNavigator.pushPage('offline.html');
+  },
+  false
+);
+//bind para cuando el dispositivo retoma internet
+document.addEventListener(
+  'online',
+  function () {
+    myNavigator.popPage();
+  },
+  false
+);
+
+// prueba switch
+function cambiarEstadoSwitch(){
+  $("#switchHome").attr(checked, false);
+}
+
+
+
+// PARA MOSTRAR Y OCULTAR DIALGO----------------------------------------
+
+var showTemplateDialog = function(idPedido) {
+  var dialog = document.getElementById('my-dialog');
+  localStorage.setItem('idPedido', idPedido);
+  if (dialog) {
+    dialog.show();
+  } else {
+    ons.createElement('dialog.html', { append: true })
+      .then(function(dialog) {
+        dialog.show();
+      });
+  }
+};
+
+var hideDialog = function(id) {
+  document
+    .getElementById(id)
+    .hide();
+};
+
+
+
+// PRUEBA PRUEBA ---------------------------------------------------------------------------------------------------------------------------
+// L.marker([posDevice.latitude, posDevice.longitude]).addTo(mymap).bindPopup('Yo').openPopup();
+
+
+function obtenerCoordenadasSucursal(direccion){
+
+  $.ajax({
+    url: `https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`,
+    
+    type: 'GET',
+    
+    dataType: 'json',
+    
+    contentType: 'application/json',
+    success: function (data) {
+      
+console.log(data)
+    
+    },
+    error: function (e1, e2, e3) {
+      console.log('Error...', e1, e2, e3)
+    },
+    complete: function () {
+      console.log('Fin!')
+    },
+  })
+
+
 }

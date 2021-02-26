@@ -179,7 +179,11 @@
       </div>
       <div class="right">
         <!-- boton para Salir -->
-        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
+        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button> 
+        
+        <ons-toolbar-button id="btnSalir" onclick="obtenerCoordenadasSucursal('Avenida 18 de Julio 1743')">obtenersuc</ons-toolbar-button> 
+        
+        
       </div>
     </ons-toolbar>
     <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
@@ -189,9 +193,9 @@
       Activar Modo nocturno
     </div>
     <div class="center titulo">
-      <ons-switch onclick="ons.notification.alert(
+      <ons-switch id="switchHome" onclick="ons.notification.alert(
         { message: 'Se realizan tareas de respaldo entre la 13:30 y 13:00. Durante este tiempo el MODO NOCTURNO está fuera de servicio. Disculpen las molestias.', title:'Mantenimiento' }
-        )"></ons-switch>
+        ),cambiarEstadoSwitch()"></ons-switch>
     </div>
     
   </ons-page>
@@ -223,7 +227,7 @@
         <ons-button onclick="buscar2()">Filtrar</ons-button>
       </p>
       <p style="margin-top: 30px;">
-        <ons-button id="qr" modifier="quiet" onclick="filtrarPorCodigo('PRCODE011')">Scan QR</ons-button>
+        <ons-button id="qr" modifier="quiet" onclick="escanear()">Scan QR</ons-button>
       </p>
     </div>
 
@@ -347,6 +351,23 @@
 </template>
 
 
+<!-- DIALOGO PARA COMENTAR PEDIDO -------------------------------------------------------------------------------------------------------------->
+
+<template id="dialog.html">
+  <ons-dialog id="my-dialog">
+    <div style="text-align: center; padding: 10px;">
+      <p>
+        Ingrese un Comentario!
+      </p>
+        <ons-input id="comentarioPedido" modifier="underbar" type="text" placeholder="escriba aqui su comentario" float>
+        </ons-input>
+      <p>
+        <ons-button modifier='quiet' onclick="hideDialog('my-dialog')">Cancelar</ons-button>
+        <ons-button modifier='quiet' onclick="hideDialog('my-dialog'),pedirOpinion()">OK</ons-button>
+      </p>
+    </div>
+  </ons-dialog>
+</template>
 
 
 </body>
