@@ -1179,11 +1179,16 @@ var hideDialog = function(id) {
 // L.marker([posDevice.latitude, posDevice.longitude]).addTo(mymap).bindPopup('Yo').openPopup();
 
 
-function obtenerCoordenadasSucursal(direccion){
-
+function obtenerCoordenadasSucursal(){
+let coordenadas = [];
   $.ajax({
-    url: `https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`,
+    url: `https://nominatim.openstreetmap.org/search`,
     
+    data: {
+      format : "json",
+      q: "Avenida 18 de Julio 1743"
+    },
+
     type: 'GET',
     
     dataType: 'json',
@@ -1191,7 +1196,8 @@ function obtenerCoordenadasSucursal(direccion){
     contentType: 'application/json',
     success: function (data) {
       
-console.log(data)
+console.log('latitud', data[0].lat)
+console.log('longitud', data[0].lon)
     
     },
     error: function (e1, e2, e3) {
