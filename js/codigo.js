@@ -1212,16 +1212,14 @@ console.log('longitud', data[0].lon)
 
 
 }
-let miUbicacion = [];
+
 
 // Mis coordenadas
 navigator.geolocation.getCurrentPosition(function(data){
-  let lat = data.coords.latitude
-  let long = data.coords.longitude
-  console.log(lat);
-  console.log(long);
-  miUbicacion.push(lat,long)
-  console.log('adentro',miUbicacion[0])
+  let miLat = data.coords.latitude
+  let miLong = data.coords.longitude
+  
+  
   });
-  console.log('afuera', miUbicacion[0])
+  
   
