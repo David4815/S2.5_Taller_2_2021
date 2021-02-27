@@ -41,26 +41,36 @@ document.addEventListener('init', function (event) {
         mostrarNuevoPedido(idproducto);
         traerSucursales();
 
-        setTimeout(() => {
+        // Mis coordenadas
+navigator.geolocation.getCurrentPosition(function(data){
+  let miLat = data.coords.latitude
+  let miLong = data.coords.longitude
+  
+  setTimeout(() => {
 
-          var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
-          
-          L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
-          L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
-          L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
-          L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
-          L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
-          
-          
-          // Mi ubicacion
-          L.marker([-34.9176711, -56.152399]).addTo(mymap).bindPopup('Yo').openPopup();
-         
+    var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
+    
+    L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
+    L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
+    L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
+    L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
+    L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
+    
+    
+    // Mi ubicacion
+    L.marker([miLat, miLong]).addTo(mymap).bindPopup('Yo').openPopup();
+   
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(mymap);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(mymap);
+  
+  }, 1000);
+
+
+  
+  });
         
-        }, 1000);
       
         break;
     case `pedidos`:
@@ -762,27 +772,27 @@ function realizarPedido(idProducto){
 
 
   // 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
-// function distance(lat1, lon1, lat2, lon2, unit) {
-// 	if ((lat1 == lat2) && (lon1 == lon2)) {
-// 		return 0;
-// 	}
-// 	else {
-// 		var radlat1 = Math.PI * lat1/180;
-// 		var radlat2 = Math.PI * lat2/180;
-// 		var theta = lon1-lon2;
-// 		var radtheta = Math.PI * theta/180;
-// 		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-// 		if (dist > 1) {
-// 			dist = 1;
-// 		}
-// 		dist = Math.acos(dist);
-// 		dist = dist * 180/Math.PI;
-// 		dist = dist * 60 * 1.1515;
-// 		if (unit=="K") { dist = dist * 1.609344 }
-// 		if (unit=="N") { dist = dist * 0.8684 }
-// 		return dist;
-// 	}
-// }
+function distance(lat1, lon1, lat2, lon2, unit) {
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
+}
 
 
 // FAVORITOS--------------------------------------------------------------
@@ -1214,12 +1224,29 @@ console.log('longitud', data[0].lon)
 }
 
 
-// Mis coordenadas
-navigator.geolocation.getCurrentPosition(function(data){
-  let miLat = data.coords.latitude
-  let miLong = data.coords.longitude
-  
-  
-  });
-  
-  
+function sucursalMasCercana(){
+  navigator.geolocation.getCurrentPosition(function(data){
+    let miLat = data.coords.latitude
+    let miLong = data.coords.longitude
+    let menorDistancia = 10000000;
+    let sucMasCercana = "Ninguna";
+    let sucursales = [
+      { Sucursal : 'Suc. Cordon', coordenadas: [-34.9028068, -56.178735] },
+      { Sucursal : 'Suc. Punta Carretas', coordenadas: [-34.92395575635019, -56.158623015187054] },
+      { Sucursal : 'Suc. Pocitos', coordenadas: [-34.90210189957535, -56.13432098820147] },
+      { Sucursal : 'Suc. Aguada', coordenadas: [-34.88929867295414, -56.18685021518797] },
+      { Sucursal : 'Suc. Centro', coordenadas: [-34.90606911366034, -56.19570190169448] }
+  ]
+   
+  for(let i=0; i<sucursales.length;i++){
+    let sucursal = sucursales[i];
+    let dist = distance(miLat, miLong, sucursal.coordenadas[0], sucursal.coordenadas[1], "K");
+    if(dist < menorDistancia){
+      menorDistancia = dist;
+      sucMasCercana = sucursal.Sucursal;
+      
+    }
+  }
+  console.log('sucMasCercana', sucMasCercana)
+  })
+}
