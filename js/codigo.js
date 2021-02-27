@@ -195,9 +195,11 @@ function login() {
       },
       error: function (e1, e2, e3) {
         console.log('Error...', e1, e2, e3)
+        ons.notification.alert({message: 'Usuario o Clave incorrecta.', title: 'Atencion!'})
       },
       complete: function () {
         console.log('Fin!')
+        
       },
     })
   }
@@ -230,7 +232,7 @@ function registrar() {
     !passwordRegistro ||
     !direccion
   ) {
-    ons.notification.alert('Debe ingresar usuario y password')
+    ons.notification.alert('Debe completar todos los campos')
   } else {
     $.ajax({
       url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/usuarios',
@@ -1210,3 +1212,16 @@ console.log('longitud', data[0].lon)
 
 
 }
+let miUbicacion = [];
+
+// Mis coordenadas
+navigator.geolocation.getCurrentPosition(function(data){
+  let lat = data.coords.latitude
+  let long = data.coords.longitude
+  console.log(lat);
+  console.log(long);
+  miUbicacion.push(lat,long)
+  console.log('adentro',miUbicacion[0])
+  });
+  console.log('afuera', miUbicacion[0])
+  
