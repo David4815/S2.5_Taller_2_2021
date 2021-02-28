@@ -216,15 +216,6 @@ function login() {
 }
 
 
-// GUARDAR CATALOGO
-
-function guardarCatalogo(){
-
-
-
-
-}
-
 
 // 06 - REGISTRO-------------------------------------------------------------------------------------------
 
@@ -256,7 +247,7 @@ function registrar() {
         password: passwordRegistro,
       }),
       contentType: 'application/json',
-      // CUANDO TENGO EXITO NO RECIBO NADA?? NO LLEGA NADA EN EL DATA PERO FUNCIONA
+      
       success: function (data) {
         // console.log(data);
         // ons.notification.alert(data.nombre)
@@ -273,6 +264,8 @@ function registrar() {
   }
 }
 let catalogoEntero;
+
+
 // 07 - LISTADO PRODUCTOS -------------------------------------------------------------------------------------------------------------------
 function mostrarListado() {
 
@@ -310,9 +303,7 @@ function mostrarListado() {
               <span class="list-item__subtitle">${elem.estado}</span>
             </div>
 
-            <div class="right">
-              <span class="list-item__title">${elem.estado}</span>
-            </div>
+          
 
           </ons-list-item>
           
@@ -352,10 +343,10 @@ function detalleProducto(id) {
       let botonComprar = "";
       if(response.data.estado === "en stock"){
 
-        botonComprar = `<span class="list-item__subtitle">   
+        botonComprar = `<span class="list-item__subtitle titulo">   
         <ons-button modifier="quiet" onClick="fn.load('nuevoPedido.html', {data: { id: '${id}'}})">
                         
-            <ons-icon icon="md-face"></ons-icon>
+        <span class="material-icons comprar" >shopping_basket</span>
                 Comprar
         </ons-button> 
     </span>`
@@ -363,13 +354,12 @@ function detalleProducto(id) {
       }
 
      
-      $('#contenedorDetalle').html(`
-      
-      <div>
-              <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
-      </div>    
+      $('#listaDet').html(`
+      <ons-list-item>
+         
 
-      <div>
+      <div class="center">
+      <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
               <span class="list-item__title">${response.data.nombre}</span>
               <span class="list-item__subtitle">${response.data.precio}UYU</span>
               <span class="list-item__subtitle">${response.data.codigo}</span>
@@ -379,20 +369,18 @@ function detalleProducto(id) {
              
              <span class="list-item__subtitle">   
                   <ons-button modifier="quiet" onClick="guardarFavorito('${id}')">
-                    <ons-icon icon="md-face"></ons-icon>
+                    <ons-icon icon="md-favorite"></ons-icon>
                       Agregar a Favoritos
                   </ons-button> 
             </span>
 
               ${botonComprar}
-              
+              <span class="list-item__title">${response.data.estado}</span>
 
        </div>
         
-       <div class="right">
-              <span class="list-item__title">${response.data.estado}</span>
-        </div>
-      
+     
+        </ons-list-item>
       
       `)
 
@@ -634,6 +622,7 @@ $.ajax({
             <span class="list-item__title">${response.data.nombre}</span>
             <span class="list-item__subtitle">${response.data.precio}UYU</span>
             <p>
+            <label for='cantidadPedida'>Cantidad:</label>
               <ons-input id="cantidadPedida" onChange="alert('hola')" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
             </p>
 
@@ -641,31 +630,29 @@ $.ajax({
             <div id="precioTotal">
             
             <p id="pTotal">Precio total: ${precioTotal} UYU</p>
-            </div>
+     </div>
 
            
-            <h3>Seleccione sucursal de retiro:</h3>
-
-
-
-              <div id="lista"> </div>
             
-              <div id="mapidPedido"></div>
 
-              <span class="list-item__subtitle">   
-              <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
-                              
-                  <ons-icon icon="md-face"></ons-icon>
-                      Comprar
-              </ons-button> 
-          </span>
 
-        
-     </div>
-        
-    `
-    
-    )
+
+      <div id="lista"> </div>
+            
+      <div id="mapidPedido"></div>
+
+      
+
+
+     <span class="list-item__subtitle titulo">   
+        <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
+                     
+        <span class="material-icons comprar" >shop</span>
+             Completar comprar
+        </ons-button> 
+    </span>
+
+    `)
     // boton para calcular precio total
     // <ons-button id="calcularPrecioTotal" onclick="${function calcular(){$("#pTotal").html(precioTotal*($("#cantidadPedida").val()))}})">Calcular Precio Total</ons-button>
     
@@ -684,6 +671,7 @@ $.ajax({
    
 }
 // TRAER SUCURSALES
+let listaSucursales;
 function traerSucursales(){
   $.ajax({
     url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/sucursales`,
@@ -696,13 +684,14 @@ function traerSucursales(){
     //   $(`#progresCargaDetalle`).show()
     // },
     success: function (suc) {
-      
+      listaSucursales = suc;
 
-     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)"> 
-     <select class="select-input" id="selectSucursal">
+     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)">
+                          <label for="selectSucursal">Sucursal de retiro:</label> 
+                          <select class="select-input" id="selectSucursal">
   
-  </select>        
-     </ons-select>`) 
+                          </select>        
+                      </ons-select>`) 
       for(let i=0; i<suc.data.length; i++){
         $('#selectSucursal').append(`<option value="${suc.data[i]._id}">${suc.data[i].nombre}</option>`) 
     }
@@ -810,6 +799,7 @@ function guardarFavorito(idFavorito) {
         elem.favoritos.push(idFavorito);
       }
       agregado = true;
+      ons.notification.toast("Agregado a Favoritos", { timeout: 1000 })
     }
   });
   if (!agregado) {
@@ -904,7 +894,7 @@ function obtenerFavoritos() {
 
 
 
-
+// MOSTRAR FAVORITOS------------------------------------------------------------------------------------
 
 function mostrarFavoritos(){
 
@@ -929,18 +919,17 @@ function mostrarFavoritos(){
             <span class="list-item__subtitle">${catalogoEntero.data[i].precio}UYU</span>
             <span class="list-item__subtitle">${catalogoEntero.data[i].codigo}</span>
             <span class="list-item__subtitle">${catalogoEntero.data[i].etiquetas}</span>
+            <span class="list-item__subtitle">${catalogoEntero.data[i].estado}</span>
           </div>
   
-          <div class="right">
-            <span class="list-item__title">${catalogoEntero.data[i].estado}</span>
-          </div>
+          <span class="material-icons">face</span>
   
         </ons-list-item>
         
         <span class="list-item__subtitle">   
               <ons-button modifier="quiet" onClick="removerFavorito('${catalogoEntero.data[i]._id}'),fn.load('favoritos.html')">
-                   <ons-icon icon="md-face"></ons-icon>
-                    Eliminar Favoritos
+                   <ons-icon icon="md-delete"></ons-icon>
+                    Eliminar favorito
               </ons-button> 
          </span>
         
@@ -965,6 +954,9 @@ function mostrarFavoritos(){
   // }, false);
 
 
+// LISTAR PEDIDOS ---------------------------------------------------------------------------------------------------------
+
+
   function listarPedidos(){
     $('#listaPedidos').empty();
  // TOKEN
@@ -984,8 +976,12 @@ function mostrarFavoritos(){
      // console.log('data traida', dataTraida.data[0].urlImagen)      
     //  fn.load('detalle.html', {data: { id: '${elem._id}'}})
      dataTraida.data.forEach((elem) => {
-       
-      $('#listaPedidos').append(` 
+       let color = '';
+      if(elem.estado==='entregado'){
+        color = 'style="color:green"'
+      }
+
+      $('#listaPedidos').prepend(` 
          <ons-list-item onClick="evaluarEstadoPedido('${elem._id}','${elem.estado}')">
        
          <div class="left">
@@ -997,13 +993,11 @@ function mostrarFavoritos(){
              <span class="list-item__subtitle">${elem.total}UYU</span>
              <span class="list-item__subtitle">${elem.producto.codigo}</span>
              <span class="list-item__subtitle">${elem.producto.etiquetas}</span>
-             <span class="list-item__subtitle">${elem.sucursal.nombre}</span>
-             <span class="list-item__subtitle">${elem.estado}</span>
+             <span class="list-item__subtitle">Sucursal: ${elem.sucursal.nombre}</span>
+             <span class="list-item__subtitle">Estado del pedido: <span ${color}>${elem.estado}</span></span>
            </div>
 
-           <div class="right">
-             <span class="list-item__title">${elem.estado}</span>
-           </div>
+          
 
          </ons-list-item>
          
@@ -1023,14 +1017,16 @@ function mostrarFavoritos(){
 }
 
 
+// EVALUAR ESTADO DE PRODUCTO-------------------------------------------------------------------------
+
 function evaluarEstadoPedido(idProducto, estadoProducto){
 if(estadoProducto === 'pendiente'){
   showTemplateDialog(idProducto);
 }else{
-  ons.notification.alert('Pedido ya entregado');
+  ons.notification.alert({message :'Pedido ya entregado', title : 'Atencion!'});
 }
 }
-// alert para agregar opinion de producto---------------------------------------------------------------
+// AGREGAR opinion de producto AL HACER CLIK OK EN EL DIALOGO QUE PERMITE INGRESAR UN COMENTARIO---------------------------------------------------------------
 
 function pedirOpinion(){
 
@@ -1068,30 +1064,30 @@ function pedirOpinion(){
 
 }
 
+// PARA QUE SE MUESTRE Y OCULTE ALERT QUE NO VA MAS POR QUE ERA CON DIALOG
 
+// var createAlertDialog = function() {
+//   var dialog = document.getElementById('my-alert-dialog');
 
-var createAlertDialog = function() {
-  var dialog = document.getElementById('my-alert-dialog');
+//   if (dialog) {
+//     dialog.show();
+//   } else {
+//     ons.createElement('alert-dialog.html', { append: true })
+//       .then(function(dialog) {
+//         dialog.show();
+//       });
+//   }
+// };
 
-  if (dialog) {
-    dialog.show();
-  } else {
-    ons.createElement('alert-dialog.html', { append: true })
-      .then(function(dialog) {
-        dialog.show();
-      });
-  }
-};
+// var hideAlertDialog = function() {
+//   document
+//     .getElementById('my-alert-dialog')
+//     .hide();
+// };
 
-var hideAlertDialog = function() {
-  document
-    .getElementById('my-alert-dialog')
-    .hide();
-};
-
-var notify = function() {
-  ons.notification.alert({ message:'<ons-input id="nombre" modifier="underbar" placeholder="comente aqui" float></ons-input>' , title: 'Ingrese un comentario.'});
-};
+// var notify = function() {
+//   ons.notification.alert({ message:'<ons-input id="nombre" modifier="underbar" placeholder="comente aqui" float></ons-input>' , title: 'Ingrese un comentario.'});
+// };
   
 
 
@@ -1190,9 +1186,10 @@ var hideDialog = function(id) {
 // PRUEBA PRUEBA ---------------------------------------------------------------------------------------------------------------------------
 // L.marker([posDevice.latitude, posDevice.longitude]).addTo(mymap).bindPopup('Yo').openPopup();
 
-
+  let sucLat;
+  let sucLong;
 function obtenerCoordenadasSucursal(){
-let coordenadas = [];
+
   $.ajax({
     url: `https://nominatim.openstreetmap.org/search`,
     
@@ -1207,7 +1204,8 @@ let coordenadas = [];
     
     contentType: 'application/json',
     success: function (data) {
-      
+       sucLat = data[0].lat;
+      sucLong = data[0].lon;
 console.log('latitud', data[0].lat)
 console.log('longitud', data[0].lon)
     
@@ -1224,29 +1222,75 @@ console.log('longitud', data[0].lon)
 }
 
 
+function obtenerCoordenadasSucursal(suc){
+
+$.ajax({
+  url: `https://nominatim.openstreetmap.org/search`,
+  
+  data: {
+    format : "json",
+    q: suc 
+  },
+
+  type: 'GET',
+  
+  dataType: 'json',
+  
+  contentType: 'application/json',
+  success: function (data) {
+     sucLat = data[0].lat;
+    sucLong = data[0].lon;
+console.log('latitud', data[0].lat)
+console.log('longitud', data[0].lon)
+  
+  },
+  error: function (e1, e2, e3) {
+    console.log('Error...', e1, e2, e3)
+  },
+  complete: function () {
+    console.log('Fin!')
+  },
+})
+
+
+} 
 function sucursalMasCercana(){
   navigator.geolocation.getCurrentPosition(function(data){
     let miLat = data.coords.latitude
     let miLong = data.coords.longitude
     let menorDistancia = 10000000;
     let sucMasCercana = "Ninguna";
-    let sucursales = [
-      { Sucursal : 'Suc. Cordon', coordenadas: [-34.9028068, -56.178735] },
-      { Sucursal : 'Suc. Punta Carretas', coordenadas: [-34.92395575635019, -56.158623015187054] },
-      { Sucursal : 'Suc. Pocitos', coordenadas: [-34.90210189957535, -56.13432098820147] },
-      { Sucursal : 'Suc. Aguada', coordenadas: [-34.88929867295414, -56.18685021518797] },
-      { Sucursal : 'Suc. Centro', coordenadas: [-34.90606911366034, -56.19570190169448] }
-  ]
+  //   let sucursales = [
+  //     { Sucursal : 'Suc. Cordon', coordenadas: [-34.9028068, -56.178735] },
+  //     { Sucursal : 'Suc. Punta Carretas', coordenadas: [-34.92395575635019, -56.158623015187054] },
+  //     { Sucursal : 'Suc. Pocitos', coordenadas: [-34.90210189957535, -56.13432098820147] },
+  //     { Sucursal : 'Suc. Aguada', coordenadas: [-34.88929867295414, -56.18685021518797] },
+  //     { Sucursal : 'Suc. Centro', coordenadas: [-34.90606911366034, -56.19570190169448] }
+  // ]
    
-  for(let i=0; i<sucursales.length;i++){
-    let sucursal = sucursales[i];
-    let dist = distance(miLat, miLong, sucursal.coordenadas[0], sucursal.coordenadas[1], "K");
-    if(dist < menorDistancia){
-      menorDistancia = dist;
-      sucMasCercana = sucursal.Sucursal;
+  // for(let i=0; i<sucursales.length;i++){
+  //   let sucursal = sucursales[i];
+  //   let dist = distance(miLat, miLong, sucursal.coordenadas[0], sucursal.coordenadas[1], "K");
+  //   if(dist < menorDistancia){
+  //     menorDistancia = dist;
+  //     sucMasCercana = sucursal.Sucursal;
       
-    }
+  //   }
+  // }
+
+  for(let i=0; i<listaSucursales.length;i++){
+    let sucursal = listaSucursales[i].data.nombre;
+    
+    obtenerCoordenadasSucursal(sucursal);
+    let dist = distance(miLat, miLong, sucLat, sucLong, "K");
+      if(dist < menorDistancia){
+        menorDistancia = dist;
+        sucMasCercana = sucursal;
+        
+      }
+  
   }
+
   console.log('sucMasCercana', sucMasCercana)
   })
 }

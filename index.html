@@ -10,7 +10,8 @@
   <!-- Mapa CSS - Leaflet---------------------------------------------------- -->
   <link rel="stylesheet" href="css/leaflet.css">
   <!-- fin Mapa CSS -->
-
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet">
 
   
   <script src="js/onsenui.js"></script>
@@ -102,9 +103,11 @@
 
     <div style="text-align: center; margin-top: 30px;">
       <p>
+        <label for="username">Username</label>
         <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
       </p>
       <p>
+        <label for="password">Password</label>
         <ons-input id="password" modifier="underbar" type="password" placeholder="Password" value="12345678" float>
         </ons-input>
       </p>
@@ -269,7 +272,11 @@
 
     <!-- <h4>Detalle del producto:</h4> -->
     <ons-progress-circular indeterminate id="progressCargaDetalle"></ons-progress-circular>
-    <div id="contenedorDetalle"></div>
+    <div id="contenedorDetalle">
+      <ons-list id="listaDet">
+
+      </ons-list>
+    </div>
 
   </ons-page>
 </template>
