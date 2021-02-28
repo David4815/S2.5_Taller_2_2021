@@ -620,7 +620,7 @@ $.ajax({
 
     <div>
             <span class="list-item__title">${response.data.nombre}</span>
-            <span class="list-item__subtitle">${response.data.precio}UYU</span>
+            
             <p>
             <label for='cantidadPedida'>Cantidad:</label>
               <ons-input id="cantidadPedida" onChange="alert('hola')" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
@@ -1091,6 +1091,43 @@ function pedirOpinion(){
   
 
 
+// CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// FALTA DE INTERNET-------------------------------------------------------------------------------------------
+
+//callbacks para el device ready de cordova y el el de onsen-------------??????????????????????????????????????????????????????????????????????????????????------
+document.addEventListener('deviceready', onDeviceReady, false);
+// ons.ready(init);
+
+//bind para cuando el dispositivo se queda sin internet
+document.addEventListener(
+  'offline',
+  function () {
+    // console.log('offline callback');
+    // myNavigator.pushPage('offline.html');
+    ons.notification.alert("sin internet");
+  },
+  false
+);
+//bind para cuando el dispositivo retoma internet
+document.addEventListener(
+  'online',
+  function () {
+    // myNavigator.popPage();
+    ons.notification.alert("con internet");
+  },
+  false
+);
+
+// prueba switch
+function cambiarEstadoSwitch(){
+  $("#switchHome").attr(checked, false);
+}
+
 // ESCANEAR QR------------------------------------------------------------------------------------------------------------
 
 
@@ -1129,34 +1166,11 @@ function scanCallback(err, text) {
   }
 }
 
-// FALTA DE INTERNET-------------------------------------------------------------------------------------------
+// FIN CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// FIN CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// FIN CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// FIN CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//callbacks para el device ready de cordova y el el de onsen-------------??????????????????????????????????????????????????????????????????????????????????------
-// document.addEventListener('deviceready', onDeviceReady, false);
-// ons.ready(init);
-
-//bind para cuando el dispositivo se queda sin internet
-document.addEventListener(
-  'offline',
-  function () {
-    console.log('offline callback');
-    myNavigator.pushPage('offline.html');
-  },
-  false
-);
-//bind para cuando el dispositivo retoma internet
-document.addEventListener(
-  'online',
-  function () {
-    myNavigator.popPage();
-  },
-  false
-);
-
-// prueba switch
-function cambiarEstadoSwitch(){
-  $("#switchHome").attr(checked, false);
-}
 
 
 
