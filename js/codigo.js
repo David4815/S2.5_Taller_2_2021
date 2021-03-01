@@ -27,7 +27,15 @@ document.addEventListener('init', function (event) {
 
   switch (page.id) {
 
-    
+    case 'login':
+      
+      if(localStorage.getItem('token')){
+        fn.load('home.html');
+        $("#menu").css('display', '');
+}
+     
+      break;
+   
 
     case `detalle`:
 
@@ -37,39 +45,28 @@ document.addEventListener('init', function (event) {
 
     case `nuevoPedido`:
 
+      
+        // $("#cantidadPedida input").on("keyup keydown change", function() {
+        //   debugger;
+        //     var cantidadPedida = $("#cantidadPedida").val()
+        //     // Ocultar o mostrar de acuerdo al largo del texto
+        //     if (cantidadPedida > 0) {
+        //         $("#pTotal").html(cantidadPedida);
+        //     } else {
+        //         $("#pTotal").css("display", "block");
+        //     }
+        // });
+      
+
+
         let idproducto = page.data.id;
+
         mostrarNuevoPedido(idproducto);
+        setTimeout(() => {
         traerSucursales();
-
+        },500);
         // Mis coordenadas
-navigator.geolocation.getCurrentPosition(function(data){
-  let miLat = data.coords.latitude
-  let miLong = data.coords.longitude
-  
-  setTimeout(() => {
-
-    var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
-    
-    L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
-    L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
-    L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
-    L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
-    L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
-    
-    
-    // Mi ubicacion
-    L.marker([miLat, miLong]).addTo(mymap).bindPopup('Yo').openPopup();
-   
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(mymap);
-  
-  }, 1000);
-
-
-  
-  });
+        pedirMapa();
         
       
         break;
@@ -94,6 +91,39 @@ attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStree
 
 
 })
+
+function pedirMapa(){
+  navigator.geolocation.getCurrentPosition(function(data){
+    let miLat = data.coords.latitude
+    let miLong = data.coords.longitude
+    
+    setTimeout(() => {
+  
+      var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
+      
+      L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
+      L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
+      L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
+      L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
+      L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
+      
+      
+      // Mi ubicacion
+      L.marker([miLat, miLong]).addTo(mymap).bindPopup('Yo').openPopup();
+     
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(mymap);
+    
+    }, 1000);
+  
+  
+    
+    });
+
+}
+
 
 // 02 - MANEJO DE PAGINAS CON MENU Y NAVIGATOR------------------------------------------------------
 
@@ -165,6 +195,8 @@ function logout() {
 // 05 - LOGIN---------------------------------------------------------------------------------------------------
 
 function login() {
+
+  
   let username = $('#username').val()
   let password = $('#password').val()
 
@@ -607,57 +639,34 @@ $.ajax({
   //   for(let i=0; i<sucursales.length; i++){
   //     `$('#choose-sel').append(<option value=${sucursales[i]}></option>)`
   // }
-    let precioTotal = response.data.precio;
+    let precioUnitario = response.data.precio;
     
     
-    
+    $("#cantidadPedida input").on("keyup keydown change", function() {
+      debugger;
+        var cantidadPedida = $("#cantidadPedida").val()
+        // Ocultar o mostrar de acuerdo al largo del texto
+        if (cantidadPedida > 0) {
+            $("#pTotal").html(`Precio total: ${cantidadPedida*precioUnitario} UYU`);
+        } else {
+            $("#pTotal").css("display", "block");
+        }
+    });
    
-    $('#ContenedorNuevoPedido').html(`
     
-    <div>
-            <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
-    </div>    
-
-    <div>
-            <span class="list-item__title">${response.data.nombre}</span>
-            
-            <p>
-            <label for='cantidadPedida'>Cantidad:</label>
-              <ons-input id="cantidadPedida" onChange="alert('hola')" modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
-            </p>
-
-            
-            <div id="precioTotal">
-            
-            <p id="pTotal">Precio total: ${precioTotal} UYU</p>
-     </div>
-
-           
-            
-
-
-
-      <div id="lista"> </div>
-            
-      <div id="mapidPedido"></div>
-
+    
+    
+          $('#imgNuevoPedido').html(`<img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">`)
       
 
-
-     <span class="list-item__subtitle titulo">   
-        <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
-                     
-        <span class="material-icons comprar" >shop</span>
-             Completar comprar
-        </ons-button> 
-    </span>
-
-    `)
-    // boton para calcular precio total
-    // <ons-button id="calcularPrecioTotal" onclick="${function calcular(){$("#pTotal").html(precioTotal*($("#cantidadPedida").val()))}})">Calcular Precio Total</ons-button>
+   
+            $("#nombreNuevoPedido").html(`${response.data.nombre}`);
+            
+            
+            
+      
     
-    // $(`#progresCargaDetalle`).hide()
-    $('#progressCargaDetalle').hide();
+    
   },
   error: function (e1, e2, e3) {
     console.log('Error...', e1, e2, e3)
@@ -738,7 +747,7 @@ function realizarPedido(idProducto){
     success: function () {
 
         
-        ons.notification.alert("pedido exitoso")
+        ons.notification.toast("pedido exitoso", { timeout: 1000 })
     
     },
     error: function (e1, e2, e3) {
@@ -1292,19 +1301,27 @@ function sucursalMasCercana(){
   //   }
   // }
 
-  for(let i=0; i<listaSucursales.length;i++){
-    let sucursal = listaSucursales[i].data.nombre;
-    
+  for(let i=0; i<listaSucursales.data.length;i++){
+    let sucursal = listaSucursales.data[i].direccion;
     obtenerCoordenadasSucursal(sucursal);
-    let dist = distance(miLat, miLong, sucLat, sucLong, "K");
+    setTimeout(function(){
+
+      let dist = distance(miLat, miLong, sucLat, sucLong, "K");
       if(dist < menorDistancia){
         menorDistancia = dist;
         sucMasCercana = sucursal;
-        
       }
+
+    },500)
+    
+    
+        
+      
   
   }
 
   console.log('sucMasCercana', sucMasCercana)
   })
 }
+
+

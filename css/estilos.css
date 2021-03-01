@@ -14,47 +14,23 @@ input{
 } */
 /* 
 
-CAMBIOS
-
-clase titulo a titulos para que queden centrados
-
-guion filtrar por nombre en id por eso no se movia a detalle despues de filtrar
-
-mostrarListado() se cambia de boton login a funcion login por que se ejecutaba antes que el login y daba error
-
-cambio boton salir      <!-- <ons-button id="btnMostrarListado" onclick="logout()">Salir</ons-button> -->
-                        <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button>
-
-
-boton para poner funcion de escanear qr
-
-
-PARA REVISAR
-
-sucursal de retiro aparece aveces si y a veces no
-en stock en los productos en el celular queda afuera al estar a la derecha hay que ponerlo abajo
-poner toast agregado a favorios
-        toast eliminado de favoritos
-        compra exitosa
-
-
-
-PREGUNTAS
-
-DISTANCIA ENTRE SUCURSALES
-CODIGO QR
-CALCULO EN TIEMPO REAL DE COSTO TOTAL
-
 FALTA VERIFICACION DE MANTENER REGISTRO, SI NO HAY TOKEN IR A LOGIN SI NO IR A HOME
+token usarlo para no ir a login
+calcular precio total
+crear apk
+codigo qr
+distancias fucnion
 
-FALTA SEPARAR DIRECCION, NOMBRE DE CALLE Y NUMERO DE PUERTA
 
 
 
-COMENTARIOS
 
-SE AGREGA DISPLAY NONE AL INICIO EN EL MENU Y AL LOGUEARSE SE PONE VISIBLE EL MENU
-SE ELIMINA MENU EN DETALLE Y NUEVO PEDIDO SOLO SE PUEDE IR PARA ATRAS
+
+
+
+
+
+
 
 
 

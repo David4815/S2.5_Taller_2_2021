@@ -318,6 +318,7 @@
       </div>
       <div class="center titulo">
         Nuevo Pedidos
+        <ons-toolbar-button id="btnSalir" onclick="sucursalMasCercana()">sucmascerc</ons-toolbar-button> 
       </div>
       <div class="right">
         <!-- boton para Salir -->
@@ -327,6 +328,46 @@
     
     <div id="ContenedorNuevoPedido">
 
+
+      <div id="imgNuevoPedido">
+        
+</div>    
+
+<div>
+        <span id="nombreNuevoPedido" class="list-item__title">
+
+        </span>
+        
+        <p>
+        <label for='cantidadPedida'>Cantidad:</label>
+          <ons-input id="cantidadPedida"  modifier="underbar" placeholder="cantidadPedida" float></ons-input>
+        </p>
+
+        
+        <div id="precioTotal">
+        
+        <p id="pTotal"></p>
+ </div>
+
+       
+        
+
+
+
+  <div id="lista"> </div>
+        
+  <div id="mapidPedido"></div>
+
+  
+
+
+ <span class="list-item__subtitle titulo">   
+    <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
+                 
+    <span class="material-icons comprar" >shop</span>
+         Completar comprar
+    </ons-button> 
+</span>
     </div>
 
 
