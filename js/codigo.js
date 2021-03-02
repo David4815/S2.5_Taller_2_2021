@@ -1,23 +1,5 @@
 
-//  --------------------- INDICE JS ---------------------------------------------------
 
-//              01 - CAPTURA EVENTOS INIT
-//              02 - MANEJO DE PAGINAS CON MENU Y NAVIGATOR
-//              03 - codigo para el SELECT (combo desplegable en sucursales)
-//              04 - LOGOUT
-//              05 - LOGIN
-//              06 - REGISTRO
-//              07 - LISTADO PRODUCTOS
-//              08 - DETELLE DE PORDUCTO
-//              09 - FILTRAR
-//                09.A - FILTRAR POR NOMBRE
-//                09.A - FILTRAR POR ETIQUETA
-//              10 - APLICAR FILTROS POR NOMBRE Y ETIQUETA
-//              11 - NUEVO PEDIDO
-// 12 REALIZAR PEDIDO
-// 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
-// ---------------------------------------------------------------------------------------
-// localStorage.setItem("paginaActual","");
 
 
 // 01 - CAPTURA DE EVENTOS-----------------------------------------------------------------------------
@@ -53,7 +35,7 @@ document.addEventListener('init', function (event) {
         
         traerSucursales();
        
-        // Mis coordenadas
+        
         pedirMapa();
         
       
@@ -70,12 +52,6 @@ document.addEventListener('init', function (event) {
   }
 
 
-  
-  // if (event.target.id == "nuevoPedido") {
-  //   document.getElementById("my-switch").addEventListener('change', function(e) {
-  //     console.log('click', e);
-  //   });
-  // }
 
 
 })
@@ -98,9 +74,9 @@ function pedirMapa(){
     
         iconSize:     [40, 45], 
        
-        iconAnchor:   [22, 94], 
+        // iconAnchor:   [22, 94], 
         
-        popupAnchor:  [-3, -76] 
+        // popupAnchor:  [-3, -76] 
     });
       
 
@@ -141,21 +117,6 @@ window.fn.load = function(page, data) {
   var content = document.getElementById('myNavigator');
   var menu = document.getElementById('menu');
 
-// prueba para precio total
-// localStorage.removeItem("paginaActual");
-// localStorage.setItem("paginaActual", page);
-
-// fin prueba
-
-
-  // if(page!="catalogo.html"){
-
-  //   content.pushPage(page, data)
-  //   .then(menu.close.bind(menu));
-  // }else{
-  //   content.resetToPage(page, data)
-  //   .then(menu.close.bind(menu));
-  // }
   
   if(page==="catalogo.html" || page==="favoritos.html" || page==="pedidos.html"){
     content.resetToPage(page, data)
@@ -200,13 +161,8 @@ function logout() {
 function login() {
 
   
-  let username = $('#username').val()
-  let password = $('#password').val()
-
-  //   let jsonDatos={
-  //     'email': "jp@gmail.com",
-  //     'password': 12345678 ,
-  // };
+  let username = $('#username').val();
+  let password = $('#password').val();
 
   // VERIFICACION PARA EVITAR PEDIDOS INNECESARIOS AL SERVIDOR
   if (username === '' || password === '') {
@@ -290,11 +246,8 @@ function registrar() {
       contentType: 'application/json',
       
       success: function (data) {
-        // console.log(data);
-        // ons.notification.alert(data.nombre)
         ons.notification.toast('Usuario registrado', { timeout: 1000 })
         document.querySelector('#myNavigator').pushPage('login.html')
-        // $("#username").val() = email;
         
       },
       error: function (e1, e2, e3) {
@@ -328,8 +281,7 @@ function mostrarListado() {
       catalogoEntero = dataTraida;
       let listaCatalogo = $('#listaCatalogo');
       listaCatalogo.html("");
-      // console.log('data traida', dataTraida.data[0])
-      // console.log('data traida', dataTraida.data[0].urlImagen)      
+         
 
       dataTraida.data.forEach((elem) => {
         
@@ -387,9 +339,9 @@ function detalleProducto(id) {
       $("#imgDetalle").html(`<img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">`)
      
               $("#nombreDetalle").html(response.data.nombre);
-              $("#precioDetalle").html(`${response.data.precio}UYU`)
-              $("#codigoDetalle").html(response.data.codigo)
-              $("#etiquetasDetalle").html(response.data.etiquetas)
+              $("#precioDetalle").html(`Precio: ${response.data.precio}UYU`)
+              $("#codigoDetalle").html(`Codigo: ${response.data.codigo}`)
+              $("#etiquetasDetalle").html(`Etiquetas: ${response.data.etiquetas}`)
               $("#descripcionDetalle").html(`Descripcion: ${response.data.descripcion}`)
               $("#puntajeDetalle").html(`Puntaje: ${response.data.puntaje}`)
              
@@ -416,12 +368,7 @@ function detalleProducto(id) {
             )
               }    
 
-     
-    
-      
-     
 
-      // $(`#progresCargaDetalle`).hide()
       $('#progressCargaDetalle').hide();
     },
     error: function (e1, e2, e3) {
@@ -466,13 +413,12 @@ function filtrar() {
 
           <div class="center">
             <span class="list-item__title">${elem.nombre}</span>
-            <span class="list-item__subtitle">${elem.precio}UYU</span>
-            <span class="list-item__subtitle">${elem.codigo}</span>
-            <span class="list-item__subtitle">${elem.etiquetas}</span>
+            <span class="list-item__subtitle">Precio: ${elem.precio}UYU</span>
+            <span class="list-item__subtitle">Codigo: ${elem.codigo}</span>
+            <span class="list-item__subtitle">Etiquetas: ${elem.etiquetas}</span>
+            <span class="list-item__subtitle">${elem.estado}</span>
           </div>
-          <div class="right">
-            <span class="list-item__title">${elem.estado}</span>
-          </div>
+         
         </ons-list-item>`)
       })
       listado.fadeIn()
@@ -524,25 +470,20 @@ function filtrarPoretiqueta(){
           
           <div class="left">
               <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${elem.urlImagen}.jpg">
-            </div>
-
-            
-
-            <div class="center">
+            </div>          
            
-              <span class="list-item__title">${elem.nombre}</span>
-              <span class="list-item__subtitle">${elem.precio}UYU</span>
-              <span class="list-item__subtitle">${elem.codigo}</span>
-              <span class="list-item__subtitle">${elem.etiquetas}</span>
-            </div>
-            <div class="right">
-              <span class="list-item__title">${elem.estado}</span>
-            </div>
+            <div class="center">
+            <span class="list-item__title">${elem.nombre}</span>
+            <span class="list-item__subtitle">Precio: ${elem.precio}UYU</span>
+            <span class="list-item__subtitle">Codigo: ${elem.codigo}</span>
+            <span class="list-item__subtitle">Etiquetas: ${elem.etiquetas}</span>
+            <span class="list-item__subtitle">${elem.estado}</span>
+          </div>  
+
           </ons-list-item>`)
         }
       })
       listaCatalogo.fadeIn()
-      // $('#btnVerMas').fadeIn()
     
     },
 
@@ -612,9 +553,6 @@ function filtrarPorCodigo(unCodigo) {
 function buscar2() {
   offset = 0
   $('#listaCatalogo').empty().hide()
-  // $('#listado').fadeOut(function(){
-  //   $('#listado').empty();
-  // });
   filtrar();
   filtrarPoretiqueta();
   
@@ -634,16 +572,9 @@ $.ajax({
     'x-auth': localStorage.getItem("token"),
   },
   dataType: 'json',
-  // beforeSend: function () {
-  //   $(`#progresCargaDetalle`).show()
-  // },
+  
   success: function (response) {
-    // console.log('data', data)
-    // ons.notification.alert(response.data.nombre)
     
-  //   for(let i=0; i<sucursales.length; i++){
-  //     `$('#choose-sel').append(<option value=${sucursales[i]}></option>)`
-  // }
     let precioUnitario = response.data.precio;
     
     
@@ -657,15 +588,10 @@ $.ajax({
             $("#pTotal").css("display", "block");
         }
     });
-   
-    
-    
     
           $('#imgNuevoPedido').html(`<img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">`)
-      
-
-   
-            $("#nombreNuevoPedido").html(`${response.data.nombre}`);
+       
+           $("#nombreNuevoPedido").html(`${response.data.nombre}`);
             
             $("#pTotal").html(`Precio total: ${precioUnitario} UYU`);
             
@@ -685,9 +611,7 @@ $.ajax({
     console.log('Fin!')
   },
 })
-
-   
-   
+     
 }
 // TRAER SUCURSALES
 let listaSucursales;
@@ -699,9 +623,7 @@ function traerSucursales(){
       'x-auth': localStorage.getItem("token"),
     },
     dataType: 'json',
-    // beforeSend: function () {
-    //   $(`#progresCargaDetalle`).show()
-    // },
+    
     success: function (suc) {
       listaSucursales = suc;
 
@@ -711,7 +633,7 @@ function traerSucursales(){
     }
 
       console.log("sucursales", suc);
-      // console.log("sucursales2data", suc.data[0].nombre);
+     
     
     },
     error: function (e1, e2, e3) {
@@ -728,8 +650,7 @@ function realizarPedido(idProducto){
 
   let cant = $("#cantidadPedida").val();
   let idSuc = $("#selectSucursal").val();
-  // let idProd = "5fd63f6f1af7571a10ff2a3a";
-  // let idSuc = "601bf7d03b11a01a78163136";
+  
 
   $.ajax({
     url: `http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/pedidos`,
@@ -744,10 +665,6 @@ function realizarPedido(idProducto){
         idSucursal: idSuc,
     }),
   
-    
-    // beforeSend: function () {
-    //   $(`#progresCargaDetalle`).show()
-    // },
     contentType: 'application/json',
     success: function () {
       
@@ -765,14 +682,6 @@ function realizarPedido(idProducto){
   })
 
 }
-
-
-
-
-
-
-
-
 
 
   // 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
@@ -822,6 +731,7 @@ function guardarFavorito(idFavorito) {
   });
   if (!agregado) {
     vecFavs.push({ idUsuario: userId, favoritos: [idFavorito] });
+    ons.notification.toast("Agregado a Favoritos", { timeout: 1000 })
   }
   localStorage.setItem('favoritos', JSON.stringify(vecFavs));
 }
@@ -859,57 +769,6 @@ function obtenerFavoritos() {
   });
   return favs;
 }
-
-
-// REGALITO 2 FILTROS
-
-// function filtrar(productos, filtro) {
-//   let filtrado = [];
-//   productos.forEach(function (elem) {
-//     if (elem.nombre.includes(filtro) || elem.etiquetas.includes(filtro)) {
-//       filtrado.push(elem);
-//     }
-//   });
-//   return filtrado;
-// }
-
-
-// $(document).ready(function() {
-//   let page = localStorage.getItem("paginaActual");
-
-//     if(page === "nuevoPedido.html"){
-
-//       $("#cantidadPedida").on("keyup", function() {
-//       var largo = $("#cantidadPedida").val().length
-//       // Ocultar o mostrar de acuerdo al largo del texto
-//       if (largo > 0) {
-//           $("#pTotal").html("holis");
-//       } else {
-//           $("#actualizar").css("display", "none");
-//       }
-//   });
-// }
-  
-
-
-
-//   }
-//   );
-
-
-// $(document).ready(function() {
-//   $("#cantidadPedida").on("keyup", function() {
-//       var cantidad = $("#cantidadPedida").val()
-//       // Ocultar o mostrar de acuerdo al largo del texto
-//       if (cantidad > 0) {
-//           $("#pTotal").html("hola");
-//       } else {
-//           $("#pTotal").html("hola");
-//       }
-//   });
-// });
-
-
 
 
 // MOSTRAR FAVORITOS------------------------------------------------------------------------------------
@@ -962,16 +821,6 @@ function mostrarFavoritos(){
   
   }
 
-
-  // document.addEventListener("init", function(event) {
-  //   if (event.target.id == "my-page") {
-  //     document.getElementById("my-switch").addEventListener('change', function(e) {
-  //       console.log('click', e);
-  //     });
-  //   }
-  // }, false);
-
-
 // LISTAR PEDIDOS ---------------------------------------------------------------------------------------------------------
 
 
@@ -988,11 +837,7 @@ function mostrarFavoritos(){
    },
    dataType: 'json',
    success: function (dataTraida) {
-    //  catalogoEntero = dataTraida;
-   
-     // console.log('data traida', dataTraida.data[0])
-     // console.log('data traida', dataTraida.data[0].urlImagen)      
-    //  fn.load('detalle.html', {data: { id: '${elem._id}'}})
+  
      dataTraida.data.forEach((elem) => {
        let color = '';
       if(elem.estado==='entregado'){
@@ -1082,31 +927,7 @@ function pedirOpinion(){
 
 }
 
-// PARA QUE SE MUESTRE Y OCULTE ALERT QUE NO VA MAS POR QUE ERA CON DIALOG
 
-// var createAlertDialog = function() {
-//   var dialog = document.getElementById('my-alert-dialog');
-
-//   if (dialog) {
-//     dialog.show();
-//   } else {
-//     ons.createElement('alert-dialog.html', { append: true })
-//       .then(function(dialog) {
-//         dialog.show();
-//       });
-//   }
-// };
-
-// var hideAlertDialog = function() {
-//   document
-//     .getElementById('my-alert-dialog')
-//     .hide();
-// };
-
-// var notify = function() {
-//   ons.notification.alert({ message:'<ons-input id="nombre" modifier="underbar" placeholder="comente aqui" float></ons-input>' , title: 'Ingrese un comentario.'});
-// };
-  
 
 
 // CORDOVA-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
