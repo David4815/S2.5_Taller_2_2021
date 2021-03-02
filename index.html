@@ -24,6 +24,7 @@
   
 <!-- NO OLVIDARSE DE ESTE SCRIPT PARA CORDOVA -->
 <script src="cordova.js"></script>
+
 </head>
 
 <body>
@@ -100,11 +101,11 @@
         Login
       </div>
     </ons-toolbar>
-
+    <!-- value="JR@gmail.com" -->
     <div style="text-align: center; margin-top: 30px;">
       <p>
         <label for="username">Username</label>
-        <ons-input id="username" modifier="underbar" placeholder="Username" value="JR@gmail.com" float></ons-input>
+        <ons-input id="username" modifier="underbar" placeholder="Username"  value="JR@gmail.com" float></ons-input>
       </p>
       <p>
         <label for="password">Password</label>
@@ -179,13 +180,11 @@
       </div>
       <div class="center titulo">
         Home
-        <ons-toolbar-button id="btnSalir" onclick="sucursalMasCercana()">sucmascerc</ons-toolbar-button> 
       </div>
       <div class="right">
         <!-- boton para Salir -->
         <ons-toolbar-button id="btnSalir" onclick="logout()">Salir</ons-toolbar-button> 
         
-        <ons-toolbar-button id="btnSalir" onclick="obtenerCoordenadasSucursal()">obtenersuc</ons-toolbar-button> 
         
         
       </div>
@@ -193,14 +192,12 @@
     <p style="text-align: center; opacity: 0.6; padding-top: 20px;">
       Swipe right to open the menu!
     </p>
-    <div class="center titulo">
-      Activar Modo nocturno
-    </div>
-    <div class="center titulo">
+    
+    <!-- <div class="center titulo">
       <ons-switch id="switchHome" onclick="ons.notification.alert(
         { message: 'Se realizan tareas de respaldo entre la 13:30 y 13:00. Durante este tiempo el MODO NOCTURNO está fuera de servicio. Disculpen las molestias.', title:'Mantenimiento' }
         ),cambiarEstadoSwitch()"></ons-switch>
-    </div>
+    </div> -->
     
   </ons-page>
 
@@ -275,6 +272,36 @@
     <div id="contenedorDetalle">
       <ons-list id="listaDet">
 
+        <ons-list-item>
+         
+
+          <div class="center">
+            <div id=imgDetalle>
+
+            </div>
+         
+                  <span class="list-item__title" id='nombreDetalle'></span>
+                  <span class="list-item__subtitle" id='precioDetalle'></span>
+                  <span class="list-item__subtitle" id='codigoDetalle'></span>
+                  <span class="list-item__subtitle" id='etiquetasDetalle'></span>
+                  <span class="list-item__subtitle" id='descripcionDetalle'></span>
+                  <span class="list-item__subtitle" id='puntajeDetalle'></span>
+                 
+                 <span class="list-item__subtitle" id="btnGuardarFavoritos">   
+                     
+                </span>
+    
+                 
+                  <span class="list-item__title" id='estadoDetalle'></span>
+                  <span class="list-item__subtitle titulo" id='btnComprar'> 
+                  </span>
+           </div>
+            
+         
+            </ons-list-item>
+
+
+
       </ons-list>
     </div>
 
@@ -317,8 +344,7 @@
         <ons-back-button>atras</ons-back-button>
       </div>
       <div class="center titulo">
-        Nuevo Pedidos
-        <ons-toolbar-button id="btnSalir" onclick="sucursalMasCercana()">sucmascerc</ons-toolbar-button> 
+        Nuevo Pedido
       </div>
       <div class="right">
         <!-- boton para Salir -->
@@ -329,46 +355,42 @@
     <div id="ContenedorNuevoPedido">
 
 
-      <div id="imgNuevoPedido">
+        <div id="imgNuevoPedido">
         
-</div>    
+        </div>    
 
-<div>
-        <span id="nombreNuevoPedido" class="list-item__title">
-
-        </span>
+        <div>
+            <span id="nombreNuevoPedido" class="list-item__title">
+            </span>
         
-        <p>
-        <label for='cantidadPedida'>Cantidad:</label>
-          <ons-input id="cantidadPedida"  modifier="underbar" placeholder="cantidadPedida" float></ons-input>
-        </p>
+            <p>
+              <label for='cantidadPedida'>Cantidad:</label>
+              <ons-input id="cantidadPedida"  modifier="underbar" placeholder="cantidadPedida" value="1" float></ons-input>
+            </p>
 
         
-        <div id="precioTotal">
+            <div id="precioTotal">
+                <p id="pTotal"></p>
+            </div>
+            <div>
+              <ons-button modifier='quiet' onclick="sucursalMasCercana()">Cual es mi sucursal mas cercana?</ons-button>
+            </div>
+            <div id="lista">
+              <ons-select id="choose-sel" onchange="editSelects(event)">
+                <label for="selectSucursal">Sucursal de retiro:</label> 
+                <select class="select-input" id="selectSucursal">
+
+                </select>        
+            </ons-select>  
+            </div>
         
-        <p id="pTotal"></p>
- </div>
-
-       
-        
-
-
-
-  <div id="lista"> </div>
-        
-  <div id="mapidPedido"></div>
-
+            <div id="mapidPedido"></div>
   
-
-
- <span class="list-item__subtitle titulo">   
-    <ons-button modifier="quiet" onClick="realizarPedido('${id}'), fn.load('home.html')">
-                 
-    <span class="material-icons comprar" >shop</span>
-         Completar comprar
-    </ons-button> 
-</span>
-    </div>
+            <span class="list-item__subtitle titulo"> 
+              <div id='btnRealizarPedido'></div>  
+            
+            </span>
+      </div>
 
 
   </ons-page>

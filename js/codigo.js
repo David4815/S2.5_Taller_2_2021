@@ -17,7 +17,7 @@
 // 12 REALIZAR PEDIDO
 // 13 - DISTANCIA ENTRE 2 PUNTOS PARA MAPA
 // ---------------------------------------------------------------------------------------
-localStorage.setItem("paginaActual","");
+// localStorage.setItem("paginaActual","");
 
 
 // 01 - CAPTURA DE EVENTOS-----------------------------------------------------------------------------
@@ -32,6 +32,7 @@ document.addEventListener('init', function (event) {
       if(localStorage.getItem('token')){
         fn.load('home.html');
         $("#menu").css('display', '');
+        mostrarListado();
 }
      
       break;
@@ -45,26 +46,13 @@ document.addEventListener('init', function (event) {
 
     case `nuevoPedido`:
 
-      
-        // $("#cantidadPedida input").on("keyup keydown change", function() {
-        //   debugger;
-        //     var cantidadPedida = $("#cantidadPedida").val()
-        //     // Ocultar o mostrar de acuerdo al largo del texto
-        //     if (cantidadPedida > 0) {
-        //         $("#pTotal").html(cantidadPedida);
-        //     } else {
-        //         $("#pTotal").css("display", "block");
-        //     }
-        // });
-      
-
 
         let idproducto = page.data.id;
 
         mostrarNuevoPedido(idproducto);
-        setTimeout(() => {
+        
         traerSucursales();
-        },500);
+       
         // Mis coordenadas
         pedirMapa();
         
@@ -73,7 +61,7 @@ document.addEventListener('init', function (event) {
     case `pedidos`:
 
       listarPedidos();
-
+      break;
 
         case `favoritos`:
 
@@ -91,7 +79,9 @@ document.addEventListener('init', function (event) {
 
 
 })
-
+function financial(x) {
+  return Number.parseFloat(x).toFixed(1);
+}
 function pedirMapa(){
   navigator.geolocation.getCurrentPosition(function(data){
     let miLat = data.coords.latitude
@@ -101,15 +91,28 @@ function pedirMapa(){
   
       var mymap = L.map('mapidPedido').setView([-34.9176711, -56.152399], 15);
       
-      L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup('Suc. Cordon').openPopup();
-      L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup('Suc. Punta Carretas').openPopup();
-      L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup('Suc. Pocitos').openPopup();
-      L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup('Suc. Aguada').openPopup();
-      L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup('Suc. Centro').openPopup();
+     
+      var greenIcon = L.icon({
+        iconUrl: 'img/marcadorRojo.png',
+        
+    
+        iconSize:     [40, 45], 
+       
+        iconAnchor:   [22, 94], 
+        
+        popupAnchor:  [-3, -76] 
+    });
+      
+
+      L.marker([-34.9028068, -56.178735]).addTo(mymap).bindPopup(`Suc. Cordon (${financial(distance(-34.9028068, -56.178735, miLat, miLong))} Km)`).openPopup();
+      L.marker([-34.92395575635019, -56.158623015187054]).addTo(mymap).bindPopup(`Suc. Punta Carretas (${financial(distance(-34.92395575635019, -56.158623015187054, miLat, miLong))} Km)`).openPopup();
+      L.marker([-34.90210189957535, -56.13432098820147]).addTo(mymap).bindPopup(`Suc. Pocitos (${financial(distance(-34.90210189957535, -56.13432098820147, miLat, miLong))} Km)`).openPopup();
+      L.marker([-34.88929867295414, -56.18685021518797]).addTo(mymap).bindPopup(`Suc. Aguada (${financial(distance(-34.88929867295414, -56.18685021518797, miLat, miLong))} Km)`).openPopup();
       
       
-      // Mi ubicacion
-      L.marker([miLat, miLong]).addTo(mymap).bindPopup('Yo').openPopup();
+      L.marker([miLat, miLong],{icon: greenIcon}).addTo(mymap).bindPopup('Yo').openPopup();
+      
+      L.marker([-34.90606911366034, -56.19570190169448]).addTo(mymap).bindPopup(`Suc. Centro (${financial(distance(-34.90606911366034, -56.19570190169448, miLat, miLong))} Km)`).openPopup();
      
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -139,8 +142,8 @@ window.fn.load = function(page, data) {
   var menu = document.getElementById('menu');
 
 // prueba para precio total
-localStorage.removeItem("paginaActual");
-localStorage.setItem("paginaActual", page);
+// localStorage.removeItem("paginaActual");
+// localStorage.setItem("paginaActual", page);
 
 // fin prueba
 
@@ -208,6 +211,8 @@ function login() {
   // VERIFICACION PARA EVITAR PEDIDOS INNECESARIOS AL SERVIDOR
   if (username === '' || password === '') {
     ons.notification.alert('Debe ingresar usuario y password')
+  }else if(!username.includes(`@`)){
+    ons.notification.alert('El nombre de usuario debe tener el formato "@"');
   } else {
     // ACA TIRO EL AJAX PARA VER SI ME LOGUE
     $.ajax({
@@ -257,16 +262,20 @@ function registrar() {
   let email = $('#email').val()
   let passwordRegistro = $('#passwordRegistro').val()
   let direccion = $('#direccion').val()
+ 
   if (
-    nombre === '' ||
-    !password ||
+    !nombre ||
     !apellido ||
     !email ||
     !passwordRegistro ||
     !direccion
   ) {
     ons.notification.alert('Debe completar todos los campos')
-  } else {
+  } else if(passwordRegistro.length < 8) {ons.notification.alert('La clave debe tener al menos 8 caracteres')}else if(!email.includes(`@`))
+  {
+    ons.notification.alert('El correo debe tener el formato "@"')
+  }
+  else{
     $.ajax({
       url: 'http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/api/usuarios',
       type: 'POST',
@@ -283,17 +292,21 @@ function registrar() {
       success: function (data) {
         // console.log(data);
         // ons.notification.alert(data.nombre)
-        ons.notification.toast('Logueando...', { timeout: 1000 })
+        ons.notification.toast('Usuario registrado', { timeout: 1000 })
         document.querySelector('#myNavigator').pushPage('login.html')
+        // $("#username").val() = email;
+        
       },
       error: function (e1, e2, e3) {
         console.log('Error...', e1, e2, e3)
+        ons.notification.alert('Email incorrecto o ya existente', { timeout: 1000 })
       },
       complete: function () {
         console.log('Fin!')
       },
     })
   }
+  
 }
 let catalogoEntero;
 
@@ -329,9 +342,9 @@ function mostrarListado() {
 
            <div class="center">
               <span class="list-item__title" id="nomb">${elem.nombre}</span>
-              <span class="list-item__subtitle">${elem.precio}UYU</span>
-              <span class="list-item__subtitle">${elem.codigo}</span>
-              <span class="list-item__subtitle">${elem.etiquetas}</span>
+              <span class="list-item__subtitle">Precio: ${elem.precio}UYU</span>
+              <span class="list-item__subtitle">Codigo: ${elem.codigo}</span>
+              <span class="list-item__subtitle">Etiquetas: ${elem.etiquetas}</span>
               <span class="list-item__subtitle">${elem.estado}</span>
             </div>
 
@@ -370,51 +383,43 @@ function detalleProducto(id) {
     //   $(`#progresCargaDetalle`).show()
     // },
     success: function (response) {
-      // console.log('data', data)
-      // ons.notification.alert(response.data.nombre)
-      let botonComprar = "";
-      if(response.data.estado === "en stock"){
-
-        botonComprar = `<span class="list-item__subtitle titulo">   
-        <ons-button modifier="quiet" onClick="fn.load('nuevoPedido.html', {data: { id: '${id}'}})">
-                        
-        <span class="material-icons comprar" >shopping_basket</span>
-                Comprar
-        </ons-button> 
-    </span>`
-
-      }
-
-     
-      $('#listaDet').html(`
-      <ons-list-item>
-         
-
-      <div class="center">
-      <img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">
-              <span class="list-item__title">${response.data.nombre}</span>
-              <span class="list-item__subtitle">${response.data.precio}UYU</span>
-              <span class="list-item__subtitle">${response.data.codigo}</span>
-              <span class="list-item__subtitle">${response.data.etiquetas}</span>
-              <span class="list-item__subtitle">${response.data.descripcion}</span>
-              <span class="list-item__subtitle">${response.data.puntaje}</span>
-             
-             <span class="list-item__subtitle">   
-                  <ons-button modifier="quiet" onClick="guardarFavorito('${id}')">
-                    <ons-icon icon="md-favorite"></ons-icon>
-                      Agregar a Favoritos
-                  </ons-button> 
-            </span>
-
-              ${botonComprar}
-              <span class="list-item__title">${response.data.estado}</span>
-
-       </div>
-        
-     
-        </ons-list-item>
       
-      `)
+      $("#imgDetalle").html(`<img class="list-item__thumbnail" src="http://ec2-54-210-28-85.compute-1.amazonaws.com:3000/assets/imgs/${response.data.urlImagen}.jpg">`)
+     
+              $("#nombreDetalle").html(response.data.nombre);
+              $("#precioDetalle").html(`${response.data.precio}UYU`)
+              $("#codigoDetalle").html(response.data.codigo)
+              $("#etiquetasDetalle").html(response.data.etiquetas)
+              $("#descripcionDetalle").html(`Descripcion: ${response.data.descripcion}`)
+              $("#puntajeDetalle").html(`Puntaje: ${response.data.puntaje}`)
+             
+             
+              $("#btnGuardarFavoritos").html(`<ons-button modifier="quiet" onClick="guardarFavorito('${id}')">
+                                                  <ons-icon icon="md-favorite"></ons-icon>
+                                                  Agregar a Favoritos
+                                             </ons-button> 
+                                           `) 
+              
+
+             
+              $("#puntajeDetalle").html(response.data.estado);
+
+              if(response.data.estado === "en stock"){
+        
+                $('#btnComprar').html(`  
+                <ons-button modifier="quiet" onClick="fn.load('nuevoPedido.html', {data: { id: '${id}'}})">
+                                
+                <span class="material-icons comprar" >shopping_basket</span>
+                        Comprar
+                </ons-button> 
+            `
+            )
+              }    
+
+     
+    
+      
+     
 
       // $(`#progresCargaDetalle`).hide()
       $('#progressCargaDetalle').hide();
@@ -524,7 +529,7 @@ function filtrarPoretiqueta(){
             
 
             <div class="center">
-            <span class="list-item__title">${elem._id}</span>
+           
               <span class="list-item__title">${elem.nombre}</span>
               <span class="list-item__subtitle">${elem.precio}UYU</span>
               <span class="list-item__subtitle">${elem.codigo}</span>
@@ -643,8 +648,8 @@ $.ajax({
     
     
     $("#cantidadPedida input").on("keyup keydown change", function() {
-      debugger;
-        var cantidadPedida = $("#cantidadPedida").val()
+      
+      var cantidadPedida = $("#cantidadPedida").val()
         // Ocultar o mostrar de acuerdo al largo del texto
         if (cantidadPedida > 0) {
             $("#pTotal").html(`Precio total: ${cantidadPedida*precioUnitario} UYU`);
@@ -662,9 +667,14 @@ $.ajax({
    
             $("#nombreNuevoPedido").html(`${response.data.nombre}`);
             
+            $("#pTotal").html(`Precio total: ${precioUnitario} UYU`);
             
-            
-      
+            $("#btnRealizarPedido").html(`<ons-button modifier="quiet" onClick="realizarPedido('${id}'),fn.load('home.html')">
+                                                <span class="material-icons comprar" >
+                                                    shop
+                                                </span>
+                                                Completar comprar
+                                          </ons-button> `)
     
     
   },
@@ -695,12 +705,7 @@ function traerSucursales(){
     success: function (suc) {
       listaSucursales = suc;
 
-     $("#lista").html(`<ons-select id="choose-sel" onchange="editSelects(event)">
-                          <label for="selectSucursal">Sucursal de retiro:</label> 
-                          <select class="select-input" id="selectSucursal">
-  
-                          </select>        
-                      </ons-select>`) 
+      
       for(let i=0; i<suc.data.length; i++){
         $('#selectSucursal').append(`<option value="${suc.data[i]._id}">${suc.data[i].nombre}</option>`) 
     }
@@ -745,13 +750,14 @@ function realizarPedido(idProducto){
     // },
     contentType: 'application/json',
     success: function () {
-
+      
         
         ons.notification.toast("pedido exitoso", { timeout: 1000 })
     
     },
     error: function (e1, e2, e3) {
       console.log('Error...', e1, e2, e3)
+      ons.notification.toast("Error en la compra", { timeout: 1000 })
     },
     complete: function () {
       console.log('Fin!')
@@ -806,9 +812,12 @@ function guardarFavorito(idFavorito) {
     if (elem.idUsuario === userId) {
       if (!elem.favoritos.includes(idFavorito)) {
         elem.favoritos.push(idFavorito);
+        ons.notification.toast("Agregado a Favoritos", { timeout: 1000 })
+      }else{
+        ons.notification.toast("Ya esta en Favoritos", { timeout: 1000 })
       }
       agregado = true;
-      ons.notification.toast("Agregado a Favoritos", { timeout: 1000 })
+      
     }
   });
   if (!agregado) {
@@ -999,9 +1008,9 @@ function mostrarFavoritos(){
 
           <div class="center">
              <span class="list-item__title" id="nomb">${elem.producto.nombre}</span>
-             <span class="list-item__subtitle">${elem.total}UYU</span>
-             <span class="list-item__subtitle">${elem.producto.codigo}</span>
-             <span class="list-item__subtitle">${elem.producto.etiquetas}</span>
+             <span class="list-item__subtitle">Precio total: ${elem.total}UYU</span>
+             <span class="list-item__subtitle">Codigo: ${elem.producto.codigo}</span>
+             <span class="list-item__subtitle">Etiquetas: ${elem.producto.etiquetas}</span>
              <span class="list-item__subtitle">Sucursal: ${elem.sucursal.nombre}</span>
              <span class="list-item__subtitle">Estado del pedido: <span ${color}>${elem.estado}</span></span>
            </div>
@@ -1123,19 +1132,16 @@ document.addEventListener(
   false
 );
 //bind para cuando el dispositivo retoma internet
-document.addEventListener(
-  'online',
-  function () {
-    // myNavigator.popPage();
-    ons.notification.alert("con internet");
-  },
-  false
-);
+// document.addEventListener(
+//   'online',
+//   function () {
+    
+//     ons.notification.alert("con internet");
+//   },
+//   false
+// );
 
-// prueba switch
-function cambiarEstadoSwitch(){
-  $("#switchHome").attr(checked, false);
-}
+
 
 // ESCANEAR QR------------------------------------------------------------------------------------------------------------
 
@@ -1211,42 +1217,42 @@ var hideDialog = function(id) {
 
   let sucLat;
   let sucLong;
-function obtenerCoordenadasSucursal(){
+// function obtenerCoordenadasSucursal(){
 
-  $.ajax({
-    url: `https://nominatim.openstreetmap.org/search`,
+//   $.ajax({
+//     url: `https://nominatim.openstreetmap.org/search`,
     
-    data: {
-      format : "json",
-      q: "Avenida 18 de Julio 1743"
-    },
+//     data: {
+//       format : "json",
+//       q: "Avenida 18 de Julio 1743"
+//     },
 
-    type: 'GET',
+//     type: 'GET',
     
-    dataType: 'json',
+//     dataType: 'json',
     
-    contentType: 'application/json',
-    success: function (data) {
-       sucLat = data[0].lat;
-      sucLong = data[0].lon;
-console.log('latitud', data[0].lat)
-console.log('longitud', data[0].lon)
+//     contentType: 'application/json',
+//     success: function (data) {
+//        sucLat = data[0].lat;
+//       sucLong = data[0].lon;
+// console.log('latitud', data[0].lat)
+// console.log('longitud', data[0].lon)
     
-    },
-    error: function (e1, e2, e3) {
-      console.log('Error...', e1, e2, e3)
-    },
-    complete: function () {
-      console.log('Fin!')
-    },
-  })
+//     },
+//     error: function (e1, e2, e3) {
+//       console.log('Error...', e1, e2, e3)
+//     },
+//     complete: function () {
+//       console.log('Fin!')
+//     },
+//   })
 
 
-}
+// }
 
 
-function obtenerCoordenadasSucursal(suc){
-
+function obtenerCoordSuc(suc){
+  let coordenadas = [];
 $.ajax({
   url: `https://nominatim.openstreetmap.org/search`,
   
@@ -1265,7 +1271,7 @@ $.ajax({
     sucLong = data[0].lon;
 console.log('latitud', data[0].lat)
 console.log('longitud', data[0].lon)
-  
+coordenadas = [sucLat, sucLong]
   },
   error: function (e1, e2, e3) {
     console.log('Error...', e1, e2, e3)
@@ -1276,52 +1282,53 @@ console.log('longitud', data[0].lon)
 })
 
 
+return coordenadas;
 } 
 function sucursalMasCercana(){
   navigator.geolocation.getCurrentPosition(function(data){
     let miLat = data.coords.latitude
     let miLong = data.coords.longitude
-    let menorDistancia = 10000000;
+    let menorDistancia = Number.MAX_VALUE;
     let sucMasCercana = "Ninguna";
-  //   let sucursales = [
-  //     { Sucursal : 'Suc. Cordon', coordenadas: [-34.9028068, -56.178735] },
-  //     { Sucursal : 'Suc. Punta Carretas', coordenadas: [-34.92395575635019, -56.158623015187054] },
-  //     { Sucursal : 'Suc. Pocitos', coordenadas: [-34.90210189957535, -56.13432098820147] },
-  //     { Sucursal : 'Suc. Aguada', coordenadas: [-34.88929867295414, -56.18685021518797] },
-  //     { Sucursal : 'Suc. Centro', coordenadas: [-34.90606911366034, -56.19570190169448] }
-  // ]
+    let sucursales = [
+      { Sucursal : 'Suc. Cordon', coordenadas: [-34.9028068, -56.178735] },
+      { Sucursal : 'Suc. Punta Carretas', coordenadas: [-34.92395575635019, -56.158623015187054] },
+      { Sucursal : 'Suc. Pocitos', coordenadas: [-34.90210189957535, -56.13432098820147] },
+      { Sucursal : 'Suc. Aguada', coordenadas: [-34.88929867295414, -56.18685021518797] },
+      { Sucursal : 'Suc. Centro', coordenadas: [-34.90606911366034, -56.19570190169448] }
+  ]
    
-  // for(let i=0; i<sucursales.length;i++){
-  //   let sucursal = sucursales[i];
-  //   let dist = distance(miLat, miLong, sucursal.coordenadas[0], sucursal.coordenadas[1], "K");
-  //   if(dist < menorDistancia){
-  //     menorDistancia = dist;
-  //     sucMasCercana = sucursal.Sucursal;
+  for(let i=0; i<sucursales.length;i++){
+    let sucursal = sucursales[i];
+    let dist = distance(miLat, miLong, sucursal.coordenadas[0], sucursal.coordenadas[1], "K");
+    if(dist < menorDistancia){
+      menorDistancia = dist;
+      sucMasCercana = sucursal.Sucursal;
       
-  //   }
-  // }
+    }
+  }
 
-  for(let i=0; i<listaSucursales.data.length;i++){
-    let sucursal = listaSucursales.data[i].direccion;
-    obtenerCoordenadasSucursal(sucursal);
-    setTimeout(function(){
+  // for(let i=0; i<listaSucursales.data.length;i++){
+  //   let sucursal = listaSucursales.data[i].direccion;
+  //   obtenerCoordenadasSucursal(sucursal);
+  //   setTimeout(function(){
 
-      let dist = distance(miLat, miLong, sucLat, sucLong, "K");
-      if(dist < menorDistancia){
-        menorDistancia = dist;
-        sucMasCercana = sucursal;
-      }
+  //     let dist = distance(miLat, miLong, sucLat, sucLong, "K");
+  //     if(dist < menorDistancia){
+  //       menorDistancia = dist;
+  //       sucMasCercana = sucursal;
+  //     }
 
-    },500)
+  //   },500)
     
     
         
       
   
-  }
+  // }
 
-  console.log('sucMasCercana', sucMasCercana)
+  // console.log('sucMasCercana', sucMasCercana)
+  ons.notification.alert({message: `${sucMasCercana}`, title: 'La sucursal mas cercana es :'} )
   })
 }
-
 
